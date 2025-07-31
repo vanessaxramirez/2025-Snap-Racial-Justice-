@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import MapView, { Marker } from "react-native-maps";
+import { Button } from "react-native";
+import { useRoute } from "@react-navigation/native";
+import { Animated } from "react-native";
 import {
   StyleSheet,
   View,
@@ -11,6 +14,7 @@ import {
 } from "react-native";
 import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import AddEvent from "../components/AddEvent";
 
 import * as Location from "expo-location";
 
@@ -19,8 +23,18 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 export default function MapScreen({ navigation }) {
   const tabBarHeight = useBottomTabBarHeight();
   const insets = useSafeAreaInsets();
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+  const [location, setLocation] = useState();
+  const [errorMsg, setErrorMsg] = useState();
+  const [markerLocation, setMarker] = useState({});
+  const [addEventvisible, setAddEventvisible] = useState(false);
+  const [mapPop, setMapPop] = useState(false);
+  const [popupCoords, setPopupCoords] = useState();
+  const [isPressedLocation, setIsPressedLocation] = useState(false);
+  const route = useRoute();
+  const [targetLocation, setTargetLocation] = useState(
+    route.params?.coordinates || null
+  );
+  const scale = useRef(new Animated.Value(0)).current;
 
   const [currentRegion, setCurrentRegion] = useState({
     latitude: 34.0211573,
@@ -40,16 +54,70 @@ export default function MapScreen({ navigation }) {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
       setCurrentRegion({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+        latitude: 34.0211573,
+        longitude: -118.4503864,
+        // latitude: location.coords.latitude,
+        // longitude: location.coords.longitude,
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       });
     })();
-  }, []);
+
+    if (route.params?.coordinates) {
+      setTargetLocation(route.params.coordinates);
+      setCurrentRegion({
+        latitude: route.params.coordinates.latitude,
+        longitude: route.params.coordinates.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      setMarker({
+        latitude: route.params.coordinates.latitude,
+        longitude: route.params.coordinates.longitude,
+      });
+    }
+    setIsPressedLocation(false);
+  }, [route.params?.coordinates]);
+
+  function toggleComponent() {
+    setAddEventvisible(!addEventvisible);
+  }
+
+  const refreshEvents = async () => {
+    await fetchData();
+  };
+
+  const handleMapPress = (event) => {
+    // console.log(event.nativeEvent.coordinate);
+    const lat = event.nativeEvent.coordinate.latitude;
+    const long = event.nativeEvent.coordinate.longitude;
+
+    const { coordinate } = event.nativeEvent;
+    setMapPop(true);
+    setPopupCoords({ latitude: lat, longitude: long });
+    console.log("Map pressed at:", lat, long);
+    setTargetLocation(null);
+    setIsPressedLocation(true);
+    setMarker({
+      latitude: coordinate.latitude,
+      longitude: coordinate.longitude,
+    });
+  };
 
   let text = "Waiting...";
   text = JSON.stringify(location);
+
+  //Pop up animation for the pin icon
+  useEffect(() => {
+    // Animate from 0 to 1 scale with a spring/pop effect
+    scale.setValue(0); 
+    Animated.spring(scale, {
+      toValue: 1,
+      friction: 5,
+      tension: 150,
+      useNativeDriver: true,
+    }).start();
+  }, [markerLocation]);
 
   return (
     <View style={[styles.container, { marginBottom: tabBarHeight }]}>
@@ -58,10 +126,67 @@ export default function MapScreen({ navigation }) {
         region={currentRegion}
         showsUserLocation={true}
         showsMyLocationButton={true}
-      />
+        onLongPress={handleMapPress}
+      >
+        {(markerLocation || targetLocation) && (
+          <Marker
+            coordinate={markerLocation ?? targetLocation}
+            key={
+              markerLocation
+                ? `marker-${markerLocation.latitude}-${markerLocation.longitude}`
+                : `target-${targetLocation.latitude}-${targetLocation.longitude}`
+            }
+          >
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Animated.View style={{ transform: [{ scale }] }}>
+              <Ionicons name="location-sharp" size={30} color="red" />
+              </Animated.View>
+              {markerLocation && !targetLocation && (
+                <View
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 5,
+                    borderWidth: 1,
+                    borderColor: "#ccc",
+                  }}
+                >
+                  <Pressable
+                    onPress={() => {
+                      setAddEventvisible(true);
+                    }}
+                    style={styles.button}
+                  >
+                    <Text style={styles.buttonText}>Create Event</Text>
+                  </Pressable>
+                </View>
+              )}
+            </View>
+            {/* <Button
+            title="Create Event"
+            onLongPress={() => {
+              setAddEventvisible(true);
+            }}
+          /> */}
+          </Marker>
+        )}
+      </MapView>
 
       <View style={[styles.mapFooter]}>
         <View style={styles.locationContainer}>
+          <AddEvent
+            isVisible={addEventvisible}
+            coordinates={markerLocation}
+            onClose={() => {
+              toggleComponent();
+              refreshEvents();
+              console.log(location);
+            }}
+          />
           <TouchableOpacity
             style={[styles.userLocation, styles.shadow]}
             onPress={() => {
@@ -198,4 +323,24 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   calendarIcon: {},
+  mapPopUpButton: {
+    width: 20,
+    height: 10,
+    color: "#90D5FF",
+    backgroundColor: "white",
+    borderRadius: 3,
+    textAlign: "center",
+    shadowColor: "#000",
+  },
+  button: {
+    backgroundColor: "white",
+    padding: 5,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: "#57B9FF",
+    fontSize: 16,
+    fontFamily: "Avenir",
+    fontWeight: "bold",
+  },
 });

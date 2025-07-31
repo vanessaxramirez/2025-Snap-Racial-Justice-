@@ -1,4 +1,4 @@
-import React from "react";
+import React, { use, useEffect } from "react";
 import { useState } from "react";
 
 import {
@@ -12,8 +12,9 @@ import {
 } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { Dialog, FAB } from "@rn-vui/themed";
+import * as Location from "expo-location";
 
-export default function AddEvent({ isVisible, onClose }) {
+export default function AddEvent({ isVisible, onClose, coordinates }) {
   const [title, setTitle] = useState("");
   const [descr, setDescr] = useState("");
   const [time, setTime] = useState("");
@@ -21,6 +22,7 @@ export default function AddEvent({ isVisible, onClose }) {
   const [imageURL, setImageURL] = useState("");
 
   const [event, setEvent] = useState({});
+  const [address, setAddress] = useState(null);
 
   const fallbackImageURL =
     "https://interactive-examples.mdn.mozilla.net/media/examples/plumeria.jpg";
@@ -52,8 +54,40 @@ export default function AddEvent({ isVisible, onClose }) {
     return object;
   }
 
+  useEffect(() => {
+    if (coordinates) {
+      setLocation(coordinates);
+    }
+
+    const getAddress = async () => {
+      const coords = coordinates;
+      if (
+        !coords ||
+        typeof coords.latitude !== "number" ||
+        typeof coords.longitude !== "number"
+      ) {
+        return;
+      }
+      try {
+        const geocode = await Location.reverseGeocodeAsync({
+          latitude: coords.latitude,
+          longitude: coords.longitude,
+        });
+
+        if (geocode.length > 0) {
+          const { street, city, region } = geocode[0];
+          setAddress(`${street}, ${city}, ${region}`);
+        }
+      } catch (err) {
+        console.error("Failed to reverse geocode:", err);
+      }
+    };
+
+    getAddress();
+  }, [coordinates]);
+
   const insertData = async () => {
-    if (title != "" && time != "" && location != "") {
+    if (title != "" && time != "" && location != {}) {
       const eventData = submitToSupabase();
       console.log(eventData);
 
@@ -100,7 +134,7 @@ export default function AddEvent({ isVisible, onClose }) {
       <TextInput
         onChangeText={(text) => setLocation(text)}
         style={styles.inputFields}
-        placeholder="Location (required)"
+        placeholder={address ? address : "Location (required)"}
       ></TextInput>
       <TextInput
         onChangeText={(text) => setImageURL(text)}
