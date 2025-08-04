@@ -17,6 +17,7 @@ export const CHATBOTS = {
     imageUrl: "https://loremflickr.com/140/140",
     component: BasicChatbot,
   },
+  
 };
 export default function ConversationScreen({ route, navigation }) {
   const { user } = useAuthentication();

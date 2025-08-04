@@ -86,7 +86,7 @@ export default function ChatScreen({ navigation }) {
                 size={36}
                 color="lightgrey"
               />
-              <Text style={styles.userName}> {chat.chatId} </Text>
+              <Text style={styles.userName}> {"DannyBoy"} </Text>
               <Ionicons
                 style={styles.userCamera}
                 name="camera-outline"

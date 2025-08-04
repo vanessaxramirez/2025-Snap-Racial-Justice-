@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { findAstrologySign } from "../utils/hooks/findAstrologySign";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
+import { TouchableOpacity } from "react-native";
 
 const handleSignOut = async () => {
   try {
@@ -32,13 +33,18 @@ export default function ProfileScreen() {
   return (
     <View style={{ alignItems: "center" }}>
       <Image
-        source={{ uri: "https://i.imgur.com/FxsJ3xy.jpg" }}
-        style={{ width: 150, height: 150, borderRadius: 150 / 2 }}
+        source={{ uri: "https://cdn.myportfolio.com/a9356a26-3fa6-43b8-897a-91afdb90810f/f35e1e48-7e11-4b37-a5f4-7541e1c22392_rw_1200.png?h=3675b103bfa4c735433266229aae1e3d" }}
+        style={{ width: 150, height: 150, borderRadius: 150 / 2, margin:50 }}
       />
       <Text
         style={{
           justifyContents: "center",
           textAlign: "center",
+          fontSize: 25,
+          fontFamily: "Helvetica",
+          fontWeight: "bold",
+          color:"#000",
+          marginTop: 15,
         }}
       >
         {user &&
@@ -56,15 +62,20 @@ export default function ProfileScreen() {
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
-      <Button onPress={handleSignOut} title="Log Out" />
-      <Pressable>
-        <Button
-          onPress={() => {
+
+      <TouchableOpacity style={styles.button} onPress={() => {
+            navigation.navigate("Communities", {});
+          }}>
+          <Text style={styles.buttonText}>communities</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+          <Text style={styles.buttonText}>Log Out</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => {
             navigation.navigate("Settings", {});
-          }}
-          title="Settings"
-        />
-      </Pressable>
+          }}>
+          <Text style={styles.buttonText}>Settings</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -80,5 +91,25 @@ const styles = StyleSheet.create({
     height: 150,
     borderRadius: 150 / 2,
     alignItems: "center",
+  },
+    button: {
+    width: 200,
+    height: 50,
+    backgroundColor: "#FFFC00", 
+    paddingVertical: 12,
+    paddingHorizontal: 25,
+    borderRadius: 30,
+    alignItems: "center",
+    marginTop: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  buttonText: {
+    color: "#000",
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
