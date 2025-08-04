@@ -14,7 +14,7 @@ return (
             navigation.navigate("GC Search", {});
           }}>
         <Text style={styles.searchButtonText}>Search for Growth Circle</Text>
-      </TouchableOpacity>r
+      </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.communityCard}>
           <Text style={styles.cardText}>Community Name 1</Text>
