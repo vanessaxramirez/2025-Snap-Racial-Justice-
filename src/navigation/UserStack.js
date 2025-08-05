@@ -13,7 +13,11 @@ import MemoryScreen from "../screens/MemoryScreen";
 import EventScreen from "../screens/EventScreen"; //New component by Sona and Christian
 import CommunitiesScreen from "../screens/CommunitiesScreen";
 import GCSearchScreen from "../screens/GCSearchScreen";
+<<<<<<< HEAD
 import VerificationScreen from "../screens/VerificationScreen";
+=======
+import NonProfitScreen from "../screens/NonProfitScreen";
+>>>>>>> VanessasBranch
 
 const Stack = createStackNavigator();
 
@@ -83,8 +87,13 @@ export default function App() {
           options={{ headerShown: true }}
         />
         <Stack.Screen
+<<<<<<< HEAD
           name="Verification Page"
           component={VerificationScreen}
+=======
+          name="Org Page"
+          component={NonProfitScreen}
+>>>>>>> VanessasBranch
           options={{ headerShown: true }}
         />
       </Stack.Navigator>
