@@ -20,7 +20,7 @@ const Stack = createStackNavigator();
 export default function Header({ title }) {
   const navigation = useNavigation();
 
-  const [profilePicUrl, setProfilePicUrl] = useState("",);
+  const [profilePicUrl, setProfilePicUrl] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShLAGSlShdMBNrS74GAYZwCxd9J7STjxNEHQ&s",);
 
   const { user } = useAuthentication();
 
