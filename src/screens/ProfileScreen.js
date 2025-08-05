@@ -1,6 +1,8 @@
 import { Image, Text, View, Button, StyleSheet, Pressable } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { findAstrologySign } from "../utils/hooks/findAstrologySign";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
@@ -24,16 +26,42 @@ export default function ProfileScreen() {
   const { user } = useAuthentication();
   const [astrology, setAstrology] = useState("Pisces");
   const userSign = findAstrologySign();
+    //ADDED state var for profile picture
+  const [profilePicUrl, setProfilePicUrl] = useState("");
 
-  useEffect(() => {
+  
+  useFocusEffect(
+   useCallback(() => {
+    //updated useEffect from Header
+    async function fetchProfilePic() {
+      if (user === null) {
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.log("Profile pic fetch failure");
+      } else if (data.avatar_url) {
+        setProfilePicUrl(data.avatar_url);
+      }
+    }
+
+    fetchProfilePic();
+
+
+
     setAstrology(userSign.sign);
-  }),
-    [];
+  }, [user]));
 
   return (
     <View style={{ alignItems: "center" }}>
       <Image
-        source={{ uri: "https://cdn.myportfolio.com/a9356a26-3fa6-43b8-897a-91afdb90810f/f35e1e48-7e11-4b37-a5f4-7541e1c22392_rw_1200.png?h=3675b103bfa4c735433266229aae1e3d" }}
+       source={{ uri: profilePicUrl }} //update to state var
         style={{ width: 150, height: 150, borderRadius: 150 / 2, margin:50 }}
       />
       <Text
@@ -66,7 +94,7 @@ export default function ProfileScreen() {
       <TouchableOpacity style={styles.button} onPress={() => {
             navigation.navigate("Communities", {});
           }}>
-          <Text style={styles.buttonText}>communities</Text>
+          <Text style={styles.buttonText}>Growth Circles</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
           <Text style={styles.buttonText}>Log Out</Text>
@@ -75,6 +103,11 @@ export default function ProfileScreen() {
             navigation.navigate("Settings", {});
           }}>
           <Text style={styles.buttonText}>Settings</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={() => {
+            navigation.navigate("Verification Page", {});
+          }}>
+          <Text style={styles.buttonText}>Testing Verification</Text>
       </TouchableOpacity>
     </View>
   );
