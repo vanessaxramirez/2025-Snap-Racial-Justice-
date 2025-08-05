@@ -13,6 +13,7 @@ import MemoryScreen from "../screens/MemoryScreen";
 import EventScreen from "../screens/EventScreen"; //New component by Sona and Christian
 import CommunitiesScreen from "../screens/CommunitiesScreen";
 import GCSearchScreen from "../screens/GCSearchScreen";
+import NonProfitScreen from "../screens/NonProfitScreen";
 
 const Stack = createStackNavigator();
 
@@ -79,6 +80,11 @@ export default function App() {
         <Stack.Screen
           name="GC Search"
           component={GCSearchScreen}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="Org Page"
+          component={NonProfitScreen}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>

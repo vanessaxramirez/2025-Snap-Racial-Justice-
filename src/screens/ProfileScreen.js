@@ -12,7 +12,6 @@ import { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { findAstrologySign } from "../utils/hooks/findAstrologySign";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
-import { TouchableOpacity } from "react-native";
 
 const handleSignOut = async () => {
   try {
@@ -41,8 +40,10 @@ export default function ProfileScreen() {
   return (
     <View style={{ alignItems: "center" }}>
       <Image
-        source={{ uri: "https://cdn.myportfolio.com/a9356a26-3fa6-43b8-897a-91afdb90810f/f35e1e48-7e11-4b37-a5f4-7541e1c22392_rw_1200.png?h=3675b103bfa4c735433266229aae1e3d" }}
-        style={{ width: 150, height: 150, borderRadius: 150 / 2, margin:50 }}
+        source={{
+          uri: "https://cdn.myportfolio.com/a9356a26-3fa6-43b8-897a-91afdb90810f/f35e1e48-7e11-4b37-a5f4-7541e1c22392_rw_1200.png?h=3675b103bfa4c735433266229aae1e3d",
+        }}
+        style={{ width: 150, height: 150, borderRadius: 150 / 2, margin: 50 }}
       />
       <Text
         style={{
@@ -51,7 +52,7 @@ export default function ProfileScreen() {
           fontSize: 25,
           fontFamily: "Helvetica",
           fontWeight: "bold",
-          color:"#000",
+          color: "#000",
           marginTop: 15,
         }}
       >
@@ -70,18 +71,53 @@ export default function ProfileScreen() {
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
-      <TouchableOpacity style={styles.button} onPress={() => {
-            navigation.navigate("Communities", {});
-          }}>
-          <Text style={styles.buttonText}>communities</Text>
+      <Text style={{fontSize: "22", fontWeight: "bold", alignSelf: "left", paddingHorizontal: "10"}}>
+        Communities
+      </Text>
+      <TouchableOpacity
+        style={{
+          height: "75",
+          width: "95%",
+          backgroundColor: "#f0f0f0",
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+          borderRadius: 10,
+          alignContent: "center",
+          marginVertical: 10,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.2,
+          shadowRadius: 4,
+        }}
+        onPress={() => {
+          navigation.navigate("Communities", {});
+        }}
+      >
+        <Text style={styles.growthCircles}>
+          Growth Circles
+          </Text>
+        <Text style = {styles.members}>
+          251 Members
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-          <Text style={styles.buttonText}>Log Out</Text>
+        <Text style={styles.buttonText}>Log Out</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => {
-            navigation.navigate("Settings", {});
-          }}>
-          <Text style={styles.buttonText}>Settings</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("Settings", {});
+        }}
+      >
+        <Text style={styles.buttonText}>Settings</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("Org Page", {});
+        }}
+      >
+        <Text style={styles.buttonText}>Org Page</Text>
       </TouchableOpacity>
     </View>
   );
@@ -102,7 +138,7 @@ const styles = StyleSheet.create({
   button: {
     width: 200,
     height: 50,
-    backgroundColor: "#FFFC00", 
+    backgroundColor: "#FFFC00",
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 30,
@@ -118,4 +154,15 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "bold",
   },
+  growthCircles: {
+    fontSize: "17",
+    fontWeight: "bold",
+    marginTop: "6",
+  },
+  members: {
+    color: "#565656ff",
+    fontWeight: "bold",
+    fontSize: 14,
+    padding: "3",
+  }
 });
