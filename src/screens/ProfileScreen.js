@@ -14,7 +14,6 @@ import { useCallback } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { findAstrologySign } from "../utils/hooks/findAstrologySign";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
-import { TouchableOpacity } from "react-native";
 
 const handleSignOut = async () => {
   try {
