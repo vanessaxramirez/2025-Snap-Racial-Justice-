@@ -18,7 +18,7 @@ const zodiac = [
 ];
 
 export function findAstrologySign() {
-  const [birthday, setBirthday] = useState("git");
+  const [birthday, setBirthday] = useState("");
   const [sign, setSign] = useState("");
   const { user } = useAuthentication();
 
@@ -37,7 +37,18 @@ export function findAstrologySign() {
       if (error) {
         console.log("Birthday fetch failure");
       } else if (data.birthday) {
-        setBirthday(data.birthday.split("/").slice(0, 2));
+        const utcDateStr = data.birthday; // e.g., "2001-05-06"
+        const localDate = new Date(utcDateStr + "T00:00:00"); // lock to midnight local time
+
+        const month = String(localDate.getMonth() + 1).padStart(2, "0");
+        const day = String(localDate.getDate()).padStart(2, "0"); // ✅ FIXED: removed +1
+        const year = localDate.getFullYear();
+
+        const formattedBirthday = `${month}/${day}/${year}`;
+
+        console.log("setting birthday");
+        console.log(formattedBirthday); // e.g., "05/06/2001"
+        setBirthday(formattedBirthday);
       }
     }
 
@@ -61,15 +72,15 @@ export function findAstrologySign() {
       { month: "12", cutoffDay: 22, signs: [zodiac[11][0], zodiac[11][1]] },
     ];
 
-    const birthMonth = birthday[0];
-    const birthDay = parseInt(birthday[1]);
+    const [birthMonth, birthDayStr] = birthday.split("/");
+    const birthDay = parseInt(birthDayStr);
 
     const zodiacSign = zodiacSigns.find((sign) => sign.month === birthMonth);
     if (zodiacSign) {
       setSign(
         birthDay <= zodiacSign.cutoffDay
           ? zodiacSign.signs[0]
-          : zodiacSign.signs[1],
+          : zodiacSign.signs[1]
       );
     }
   }, [birthday]);

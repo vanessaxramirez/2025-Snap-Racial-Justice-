@@ -1,4 +1,12 @@
-import { Image, Text, View, Button, StyleSheet, Pressable } from "react-native";
+import {
+  Image,
+  Text,
+  View,
+  Button,
+  StyleSheet,
+  Pressable,
+  TouchableOpacity,
+} from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -79,7 +87,7 @@ export default function ProfileScreen() {
           user.user_metadata &&
           user.user_metadata.email.slice(
             0,
-            user.user_metadata.email.indexOf("@"), // gets part before @ of email address, should use profile username instead
+            user.user_metadata.email.indexOf("@") // gets part before @ of email address, should use profile username instead
           )}
       </Text>
       <Button
@@ -90,7 +98,6 @@ export default function ProfileScreen() {
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
-
       <TouchableOpacity style={styles.button} onPress={() => {
             navigation.navigate("Communities", {});
           }}>
@@ -125,7 +132,7 @@ const styles = StyleSheet.create({
     borderRadius: 150 / 2,
     alignItems: "center",
   },
-    button: {
+  button: {
     width: 200,
     height: 50,
     backgroundColor: "#FFFC00", 
@@ -143,6 +150,5 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#000",
     fontWeight: "bold",
-    fontSize: 16,
   },
 });
