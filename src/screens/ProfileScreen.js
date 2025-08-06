@@ -94,7 +94,7 @@ export default function ProfileScreen() {
           navigation.navigate("Astrology");
         }}
         title={astrology}
-        color="#841584"
+        color="#841584ff"
         accessibilityLabel="Learn more about this purple button"
       />
       <Text
@@ -108,26 +108,25 @@ export default function ProfileScreen() {
         Communities
       </Text>
       <TouchableOpacity
-        style={{
-          height: "75",
-          width: "95%",
-          backgroundColor: "#f0f0f0",
-          paddingVertical: 10,
-          paddingHorizontal: 20,
-          borderRadius: 10,
-          alignContent: "center",
-          marginVertical: 10,
-          shadowColor: "#000",
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.2,
-          shadowRadius: 4,
-        }}
+        style={styles.growthCirclesContainer}
         onPress={() => {
           navigation.navigate("Communities", {});
         }}
       >
-        <Text style={styles.growthCircles}>Growth Circles</Text>
-        <Text style={styles.members}>251 Members</Text>
+        <View style={styles.growthCirclesContainerView}>
+          <View style={{ flexDirection: "column" }}>
+            <Text style={styles.growthCircles}>Growth Circles</Text>
+            <Text style={styles.members}>251 Members</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.badges}
+            onPress={() => {
+              navigation.navigate("Badges", {});
+            }}
+          >
+            <Text style={{ fontWeight: "bold" }}>Badges</Text>
+          </TouchableOpacity>
+        </View>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Log Out</Text>
@@ -193,5 +192,35 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
     padding: "3",
+  },
+  growthCirclesContainer: {
+    height: "75",
+    width: "95%",
+    backgroundColor: "#f0f0f0",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    alignContent: "center",
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
+  growthCirclesContainerView: {
+    flexDirection: "row",
+    justifyContentL: "space-between",
+    alignItems: "center",
+  },
+  badges: {
+    backgroundColor: "#FFFC00",
+    padding: 8,
+    borderRadius: 20,
+    marginLeft: "auto",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 5,
   },
 });
