@@ -1,28 +1,44 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Modal, Button, StyleSheet, TextInput, Image } from "react-native";
+import {
+  Text,
+  View,
+  Modal,
+  Button,
+  StyleSheet,
+  TextInput,
+  Image,
+} from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
-import { TouchableOpacity, ScrollView} from "react-native";
+import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CommunitiesScreen() {
+  const { user } = useAuthentication();
   const navigation = useNavigation();
   const [modalVisibleInvalid, setInvalidModalVisible] = useState(false);
   const [modalVisibleValid, setValidModalVisible] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
-const handlePress = () => {
-    if(inputValue.endsWith(".edu")){
-        setValidModalVisible(true);
-        console.log("User input:", inputValue); 
-    }
-    else{
-        setInvalidModalVisible(true);
-        console.log("invalid email must use a student email")
-    }
-}; 
+  async function handleVerficationUpdate() {
+    const { error } = await supabase
+      .from("profiles")
+      .update({ verificationStatus: true })
+      .eq("id", user.id);
+  }
 
-return (
+  const handlePress = () => {
+    if (inputValue.endsWith(".edu")) {
+      setValidModalVisible(true);
+      handleVerficationUpdate();
+      console.log("User input:", inputValue);
+    } else {
+      setInvalidModalVisible(true);
+      console.log("invalid email must use a student email");
+    }
+  };
+
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter Student Email to verify</Text>
       <TextInput
@@ -32,51 +48,56 @@ return (
         style={styles.searchBar}
       />
 
-      <TouchableOpacity style={styles.searchButton}
-        onPress={() =>{ 
-            handlePress();
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={() => {
+          handlePress();
         }}
-        >
+      >
         <Text style={styles.searchButtonText}>Verify Email</Text>
-        </TouchableOpacity>
-        <Modal
-            animationType="slide"
-            transparent = {true}
-            visible = {modalVisibleInvalid}
-            onRequestClose={() => setInvalidModalVisible(false)}  
-        >
-            <View style = {styles.modalBackground}>
-                <View style = {styles.modalContainer}>
-                    <Text style ={styles.modalText}>Invalid Email Please Use a Student Email</Text> 
-                    <TouchableOpacity 
-                    style={styles.closeButton}
-                    onPress={()=> setInvalidModalVisible(false)}
-                    >
-                        <Text style = {styles.closeButtonText}>Close</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>
-         <Modal
-            animationType="slide"
-            transparent = {true}
-            visible = {modalVisibleValid}
-            onRequestClose={() => setValidModalVisible(false)}  
-        >
-            <View style = {styles.modalBackground}>
-                <View style = {styles.modalContainer}>
-                    <Text style ={styles.modalText}>Verification Complete</Text> 
-                    <TouchableOpacity 
-                    style={styles.closeButton}
-                    onPress={()=> setValidModalVisible(false)}
-                    >
-                        <Text style = {styles.closeButtonText}>Close</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        </Modal>            
+      </TouchableOpacity>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleInvalid}
+        onRequestClose={() => setInvalidModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>
+              Invalid Email Please Use a Student Email
+            </Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setInvalidModalVisible(false)}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisibleValid}
+        onRequestClose={() => setValidModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalText}>Verification Complete</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => {
+                setValidModalVisible(false);
+                navigation.navigate("Org Page", {});
+              }}
+            >
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
-
   );
 }
 
@@ -90,7 +111,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 12,
-    textAlign: "center", 
+    textAlign: "center",
   },
   searchButton: {
     backgroundColor: "#363b44ff",
@@ -118,7 +139,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
   },
-   searchBar: {
+  searchBar: {
     height: 45,
     borderRadius: 25,
     paddingHorizontal: 15,
@@ -127,28 +148,28 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     borderColor: "#ccc",
     borderWidth: 1,
-    },
-    modalContainer: {
-        width: 300,
-        padding: 20,
-        backgroundColor: '#fff',
-        borderRadius: 10,
-        alignItems: 'center',
-        },
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        },
-  modalText: { 
-    fontSize: 18, 
-    marginBottom: 20 
-        },
-    closeButton:{
-         backgroundColor: "#241978ff", 
-         padding: 10, 
-         borderRadius: 5, 
-        },
-    closeButtonText: { color: '#fff' },
+  },
+  modalContainer: {
+    width: 300,
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 20,
+  },
+  closeButton: {
+    backgroundColor: "#241978ff",
+    padding: 10,
+    borderRadius: 5,
+  },
+  closeButtonText: { color: "#fff" },
 });

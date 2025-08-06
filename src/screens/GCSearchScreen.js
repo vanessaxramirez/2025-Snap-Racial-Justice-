@@ -2,15 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Button, StyleSheet, TextInput, Image } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
-import { TouchableOpacity, ScrollView} from "react-native";
+import { TouchableOpacity, ScrollView } from "react-native";
 
 export default function CommunitiesScreen() {
-return (
+  return (
     <View style={styles.container}>
-      <TextInput
-        placeholder="Search communities..."
-        style={styles.searchBar}
-      />
+      <TextInput placeholder="Search communities..." style={styles.searchBar} />
       <TouchableOpacity style={styles.searchButton}>
         <Text style={styles.searchButtonText}>Look Up</Text>
       </TouchableOpacity>
@@ -69,13 +66,13 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   searchBar: {
-  height: 45,
-  borderRadius: 25,
-  paddingHorizontal: 15,
-  backgroundColor: "#f0f0f0",
-  fontSize: 16,
-  marginBottom: 20,
-  borderColor: "#ccc",
-  borderWidth: 1,
-}
+    height: 45,
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    backgroundColor: "#f0f0f0",
+    fontSize: 16,
+    marginBottom: 20,
+    borderColor: "#ccc",
+    borderWidth: 1,
+  },
 });
