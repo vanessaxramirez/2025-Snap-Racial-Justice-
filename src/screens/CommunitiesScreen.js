@@ -2,31 +2,82 @@ import React, { useState, useEffect } from "react";
 import { Text, View, Button, StyleSheet, TextInput, Image } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
-import { TouchableOpacity, ScrollView} from "react-native";
+import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
-return (
+  const [userVerfication, setUserVerification] = useState("");
+  const { user } = useAuthentication();
+
+  async function fetchVerificationStatus() {
+    if (user === null) {
+      return;
+    }
+
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("verificationStatus")
+      .eq("id", user.id)
+      .single();
+
+    if (error) {
+      console.log("Verification Fetch Failure");
+    } else if (data.verificationStatus) {
+      setUserVerification(data.verificationStatus);
+    }
+  }
+
+  fetchVerificationStatus();
+
+  function handleCorrectPageNav() {
+    fetchVerificationStatus();
+    if (userVerfication === true) {
+      navigation.navigate("Org Page", {});
+    } else {
+      navigation.navigate("Verification Page", {});
+    }
+  }
+
+  return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Communities</Text>
-      <TouchableOpacity style={styles.searchButton} onPress={() => {
-            navigation.navigate("GC Search", {});
-          }}>
+      <TouchableOpacity
+        style={styles.searchButton}
+        onPress={() => {
+          navigation.navigate("GC Search", {});
+        }}
+      >
         <Text style={styles.searchButtonText}>Search for Growth Circle</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 1</Text>
-        </View>
-
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 2</Text>
-        </View>
-
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 3</Text>
-        </View>
+        <TouchableOpacity
+          onPress={() => {
+            handleCorrectPageNav();
+          }}
+        >
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 1</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            handleCorrectPageNav();
+          }}
+        >
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 2</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            handleCorrectPageNav();
+          }}
+        >
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 3</Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -42,7 +93,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 12,
-    textAlign: "center", 
+    textAlign: "center",
   },
   searchButton: {
     backgroundColor: "#363b44ff",

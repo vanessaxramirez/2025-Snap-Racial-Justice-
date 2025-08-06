@@ -33,43 +33,43 @@ export default function ProfileScreen() {
   const { user } = useAuthentication();
   const [astrology, setAstrology] = useState("Pisces");
   const userSign = findAstrologySign();
-    //ADDED state var for profile picture
-  const [profilePicUrl, setProfilePicUrl] = useState("");
+  //ADDED state var for profile picture
+  const [profilePicUrl, setProfilePicUrl] = useState(
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShLAGSlShdMBNrS74GAYZwCxd9J7STjxNEHQ&s"
+  );
 
-  
   useFocusEffect(
-   useCallback(() => {
-    //updated useEffect from Header
-    async function fetchProfilePic() {
-      if (user === null) {
-        return;
+    useCallback(() => {
+      //updated useEffect from Header
+      async function fetchProfilePic() {
+        if (user === null) {
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          console.log("Profile pic fetch failure");
+        } else if (data.avatar_url) {
+          setProfilePicUrl(data.avatar_url);
+        }
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user.id)
-        .single();
+      fetchProfilePic();
 
-      if (error) {
-        console.log("Profile pic fetch failure");
-      } else if (data.avatar_url) {
-        setProfilePicUrl(data.avatar_url);
-      }
-    }
-
-    fetchProfilePic();
-
-
-
-    setAstrology(userSign.sign);
-  }, [user]));
+      setAstrology(userSign.sign);
+    }, [user])
+  );
 
   return (
     <View style={{ alignItems: "center" }}>
       <Image
-       source={{ uri: profilePicUrl }} //update to state var
-        style={{ width: 150, height: 150, borderRadius: 150 / 2, margin:50 }}
+        source={{ uri: profilePicUrl }} //update to state var
+        style={{ width: 150, height: 150, borderRadius: 150 / 2, margin: 50 }}
       />
       <Text
         style={{
@@ -97,7 +97,14 @@ export default function ProfileScreen() {
         color="#841584"
         accessibilityLabel="Learn more about this purple button"
       />
-      <Text style={{fontSize: "22", fontWeight: "bold", alignSelf: "left", paddingHorizontal: "10"}}>
+      <Text
+        style={{
+          fontSize: "22",
+          fontWeight: "bold",
+          alignSelf: "left",
+          paddingHorizontal: "10",
+        }}
+      >
         Communities
       </Text>
       <TouchableOpacity
@@ -119,12 +126,8 @@ export default function ProfileScreen() {
           navigation.navigate("Communities", {});
         }}
       >
-        <Text style={styles.growthCircles}>
-          Growth Circles
-          </Text>
-        <Text style = {styles.members}>
-          251 Members
-        </Text>
+        <Text style={styles.growthCircles}>Growth Circles</Text>
+        <Text style={styles.members}>251 Members</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.button} onPress={handleSignOut}>
         <Text style={styles.buttonText}>Log Out</Text>
@@ -144,11 +147,6 @@ export default function ProfileScreen() {
         }}
       >
         <Text style={styles.buttonText}>Org Page</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => {
-            navigation.navigate("Verification Page", {});
-          }}>
-          <Text style={styles.buttonText}>Testing Verification</Text>
       </TouchableOpacity>
     </View>
   );
@@ -195,5 +193,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
     padding: "3",
-  }
+  },
 });
