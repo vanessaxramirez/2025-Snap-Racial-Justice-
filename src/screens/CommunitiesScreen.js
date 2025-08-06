@@ -16,17 +16,27 @@ return (
         <Text style={styles.searchButtonText}>Search for Growth Circle</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 1</Text>
-        </View>
-
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 2</Text>
-        </View>
-
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Community Name 3</Text>
-        </View>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("Verification Page", {});
+          }}>
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 1</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("Verification Page", {});
+          }}>
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 2</Text>
+          </View>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+            navigation.navigate("Verification Page", {});
+          }}>
+          <View style={styles.communityCard}>
+            <Text style={styles.cardText}>Community Name 3</Text>
+          </View>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );

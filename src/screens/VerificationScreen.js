@@ -7,38 +7,74 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleInvalid, setInvalidModalVisible] = useState(false);
+  const [modalVisibleValid, setValidModalVisible] = useState(false);
+  const [inputValue, setInputValue] = useState("");
+
+const handlePress = () => {
+    if(inputValue.endsWith(".edu")){
+        setValidModalVisible(true);
+        console.log("User input:", inputValue); 
+    }
+    else{
+        setInvalidModalVisible(true);
+        console.log("invalid email must use a student email")
+    }
+}; 
+
 return (
     <View style={styles.container}>
       <Text style={styles.title}>Enter Student Email to verify</Text>
       <TextInput
         placeholder="Enter Student Email Here"
+        value={inputValue}
+        onChangeText={setInputValue}
         style={styles.searchBar}
       />
 
       <TouchableOpacity style={styles.searchButton}
-        onPress={() => setModalVisible(true)}
+        onPress={() =>{ 
+            handlePress();
+        }}
         >
         <Text style={styles.searchButtonText}>Verify Email</Text>
         </TouchableOpacity>
         <Modal
             animationType="slide"
             transparent = {true}
-            visible = {modalVisible}
-            onRequestClose={() => setModalVisible(false)}  
+            visible = {modalVisibleInvalid}
+            onRequestClose={() => setInvalidModalVisible(false)}  
+        >
+            <View style = {styles.modalBackground}>
+                <View style = {styles.modalContainer}>
+                    <Text style ={styles.modalText}>Invalid Email Please Use a Student Email</Text> 
+                    <TouchableOpacity 
+                    style={styles.closeButton}
+                    onPress={()=> setInvalidModalVisible(false)}
+                    >
+                        <Text style = {styles.closeButtonText}>Close</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </Modal>
+         <Modal
+            animationType="slide"
+            transparent = {true}
+            visible = {modalVisibleValid}
+            onRequestClose={() => setValidModalVisible(false)}  
         >
             <View style = {styles.modalBackground}>
                 <View style = {styles.modalContainer}>
                     <Text style ={styles.modalText}>Verification Complete</Text> 
                     <TouchableOpacity 
                     style={styles.closeButton}
-                    onPress={()=> setModalVisible(false)}
+                    onPress={()=> setValidModalVisible(false)}
                     >
                         <Text style = {styles.closeButtonText}>Close</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-        </Modal>      
+        </Modal>            
     </View>
 
   );
