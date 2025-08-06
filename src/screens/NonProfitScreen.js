@@ -10,9 +10,7 @@ import {
 } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { findAstrologySign } from "../utils/hooks/findAstrologySign";
-import { useAuthentication } from "../utils/hooks/useAuthentication";
+import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native";
 
 export default function NonProfitScreen() {
@@ -75,9 +73,27 @@ export default function NonProfitScreen() {
           </View>
         </View>
         <View style={{ backgroundColor: "white" }}>
-          <TouchableOpacity style={styles.readMoreButton}>
-            <Text style={styles.textButton}>Read More</Text>
-          </TouchableOpacity>
+          <View style={{ flexDirection: "row" }}>
+            <TouchableOpacity style={styles.readMoreButton}>
+              <Text style={styles.textButton}>Read More</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => console.log("Notification pressed")}
+              style={styles.notificationButton}
+            >
+              <Icon name="notifications-outline" size={20} color="#000" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => console.log("Invite pressed")}
+              style={styles.inviteButton}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name="person-add-outline" size={17} color="#000" />
+                <Text style={styles.inviteText}>  Invite</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           <Text style={styles.caption}>
             This Growth Circle and Growth Circle Group Chats are affiliated and
             managed by Black Girls who Code (BGC). Violation of Snapchat’s
@@ -85,45 +101,52 @@ export default function NonProfitScreen() {
             account lock.
           </Text>
         </View>
-        <View style={styles.container}>
-          <View>
-            <TouchableOpacity
-              style={[
-                styles.tabs,
-                selectedTab === "Groups" && styles.activeTab,
-              ]}
-              onPress={() => setSelectedTab("Groups")}
-            >
-              <Text
-                style={[
-                  styles.tabText,
-                  selectedTab === "Groups" && styles.activeTabText,
-                ]}
+
+        {/* {Group/Member tabs} */}
+        <View style={styles.tabContainer}>
+          <View style={styles.tabRow}>
+            {["Groups", "Members"].map((tab) => (
+              <TouchableOpacity
+                key={tab}
+                onPress={() => setSelectedTab(tab)}
+                style={styles.tabButton}
               >
-                Groups
-              </Text>
-            </TouchableOpacity>
-            <View style={{ width: "100%", padding: 10 }}>
-              {groupChats.map((chat) => (
-                <TouchableOpacity key={chat.id}>
-                  <Text style={styles.infoText}>{chat.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+                <Text
+                  style={[
+                    styles.tabText,
+                    selectedTab === tab && styles.activeTabText,
+                  ]}
+                >
+                  {tab}
+                </Text>
+                {selectedTab === tab && <View style={styles.activeTabLine} />}
+              </TouchableOpacity>
+            ))}
           </View>
-          <TouchableOpacity
-            style={[styles.tab, selectedTab === "Members" && styles.activeTab]}
-            onPress={() => setSelectedTab("Members")}
-          >
-            <Text
-              style={[
-                styles.tabText,
-                selectedTab === "Members" && styles.activeTabText,
-              ]}
-            >
-              Members
-            </Text>
-          </TouchableOpacity>
+        </View>
+        {/* Conditional Rendering for tabs */}
+        {selectedTab === "Groups" ? (
+          <View style={styles.groupCardContainer}>
+            {groupChats.map((chat) => (
+              <TouchableOpacity key={chat.id} style={styles.groupChatItem}>
+                <View style={styles.chatLeft}>
+                  <Text style={styles.chatIcon}>
+                    {chat.isPrivate ? "🔒" : "#"}
+                  </Text>
+                </View>
+
+                <View style={styles.chatMiddle}>
+                  <Text style={styles.chatTitle}>{chat.name}</Text>
+                  <Text style={styles.chatDescription}>{chat.description}</Text>
+                </View>
+
+                <View style={styles.chatRight}>
+                  <Text style={styles.chatArrow}>›</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
           <View style={{ width: "100%", padding: 10 }}>
             {members.map((member) => (
               <TouchableOpacity key={member.id}>
@@ -132,7 +155,7 @@ export default function NonProfitScreen() {
               </TouchableOpacity>
             ))}
           </View>
-        </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -200,14 +223,11 @@ const styles = StyleSheet.create({
   readMoreButton: {
     width: 240,
     height: 40,
-    marginTop: "2%",
-    marginLeft: 20,
+    marginLeft: 10,
     backgroundColor: "#0FADFF",
-    paddingVertical: 12,
-    // paddingHorizontal: 25,
     borderRadius: 30,
-    alignContent: "center",
-    // marginTop: 10,
+    justifyContent: "center", // ✅ center vertically
+    alignItems: "center", // ✅ center horizontally
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -219,34 +239,113 @@ const styles = StyleSheet.create({
     color: "#fbfbfbff",
     fontWeight: "bold",
   },
-  tabs: {
-    alignItems: "center",
-  },
   tabContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 12,
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
+    backgroundColor: "#fff",
+    paddingTop: 16,
   },
-  tab: {
-    paddingVertical: 8,
+  tabRow: {
+    flexDirection: "row",
     paddingHorizontal: 16,
   },
+  tabButton: {
+    flex: 1,
+    alignItems: "center",
+    paddingBottom: 12,
+  },
   tabText: {
-    fontSize: 20,
-    color: "black",
-    fontWeight: "bold",
-  },
-  infoText: {
-    fontSize: 20,
-    color: "black",
-  },
-  activeTab: {
-    borderBottomWidth: 3,
-    borderColor: "#000", // black underline
+    fontSize: 16,
+    color: "#999",
+    fontWeight: "500",
   },
   activeTabText: {
     color: "#000",
+    fontWeight: "600",
+  },
+  activeTabLine: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    width: 40,
+    backgroundColor: "#000",
+    borderRadius: 1,
+  },
+  groupCardContainer: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    paddingVertical: 8,
+    marginHorizontal: 16,
+    marginTop: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  groupChatItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderBottomColor: "#eee",
+    borderBottomWidth: 1,
+  },
+
+  chatLeft: {
+    marginRight: 12,
+  },
+
+  chatIcon: {
+    fontSize: 30,
+  },
+
+  chatMiddle: {
+    flex: 1,
+  },
+
+  chatTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+  },
+
+  chatDescription: {
+    fontSize: 13,
+    color: "#555",
+    marginTop: 2,
+  },
+
+  chatRight: {
+    marginLeft: 12,
+  },
+
+  chatArrow: {
+    fontSize: 30,
+    color: "#888",
+  },
+  notificationButton: {
+    width: 60,
+    height: 40,
+    marginLeft: 10,
+    backgroundColor: "#e2e5e7ff",
+    borderRadius: 30,
+    justifyContent: "center", // ✅ center vertically
+    alignItems: "center", // ✅ center horizontally
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  inviteButton: {
+    width: 80,
+    height: 40,
+    marginLeft: 10,
+    backgroundColor: "#e2e5e7ff",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
