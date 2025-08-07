@@ -19,14 +19,23 @@ export default function BadgesScreen() {
         {["All", "Unlocked", "Locked"].map((tab) => (
           <TouchableOpacity
             key={tab}
-            style={[styles.tab, activeTab === tab && styles.activeTab]}
+            style={styles.tab}
             onPress={() => setActiveTab(tab)}
+            activeOpacity={0.7}
           >
-            <Text
-              style={[styles.tabText, activeTab === tab && styles.activeText]}
-            >
-              {tab}
-            </Text>
+            <View style={styles.tabInner}>
+              <Text
+                style={[
+                  styles.tabText,
+                  activeTab === tab
+                    ? styles.activeTabText
+                    : styles.inactiveTabText,
+                ]}
+              >
+                {tab}
+              </Text>
+              {activeTab === tab && <View style={styles.underline} />}
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -55,44 +64,39 @@ const styles = StyleSheet.create({
   tabsRow: {
     flexDirection: "row",
     justifyContent: "space-around",
-    width: "90%",
+    width: "100%",
     marginBottom: 20,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 20,
-    padding: 5,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderColor: "#eee",
   },
   tab: {
     flex: 1,
     alignItems: "center",
-    paddingVertical: 12,
-    borderRadius: 20,
+    paddingVertical: 0,
   },
-  activeTab: {
-    backgroundColor: "#FFFC00",
+  tabInner: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   tabText: {
-    fontWeight: "bold",
     fontSize: 18,
-    color: "#565656",
+    marginBottom: 2,
   },
   activeTabText: {
+    fontWeight: "bold",
     color: "#000",
   },
-  contentBox: {
-    width: "90%",
-    backgroundColor: "#f9f9f9",
-    borderRadius: 10,
-    padding: 30,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 3,
+  inactiveTabText: {
+    fontWeight: "normal",
+    color: "#b0b0b0",
   },
-  contentText: {
-    fontSize: 18,
-    color: "#333",
+  underline: {
+    height: 3,
+    width: 28,
+    backgroundColor: "#000",
+    borderRadius: 2,
+    marginTop: 2,
   },
   badgeCard: {
     width: "30%",
