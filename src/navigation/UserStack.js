@@ -16,6 +16,8 @@ import GCSearchScreen from "../screens/GCSearchScreen";
 import VerificationScreen from "../screens/VerificationScreen";
 import NonProfitScreen from "../screens/NonProfitScreen";
 import BadgesScreen from "../screens/BadgesScreen";
+import GroupChatScreen from "../screens/GroupChatScreen";
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -96,6 +98,11 @@ export default function App() {
         <Stack.Screen
           name="Badges"
           component={BadgesScreen}
+          options={{ headerShown: true }}
+        />
+        <Stack.Screen
+          name="GroupChat"
+          component={GroupChatScreen}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>

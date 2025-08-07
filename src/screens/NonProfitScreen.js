@@ -12,11 +12,13 @@ import { supabase } from "../utils/hooks/supabase";
 import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 export default function NonProfitScreen() {
   const [groupChats, setGroupChats] = useState([]);
   const [members, setMembers] = useState([]);
   const [selectedTab, setSelectedTab] = useState("Groups");
+  const navigation = useNavigation();
 
   useEffect(() => {
     const groupChatCall = async () => {
@@ -89,7 +91,7 @@ export default function NonProfitScreen() {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Icon name="person-add-outline" size={17} color="#000" />
-                <Text style={styles.inviteText}>  Invite</Text>
+                <Text style={styles.inviteText}> Invite</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -128,7 +130,13 @@ export default function NonProfitScreen() {
         {selectedTab === "Groups" ? (
           <View style={styles.groupCardContainer}>
             {groupChats.map((chat) => (
-              <TouchableOpacity key={chat.id} style={styles.groupChatItem}>
+              <TouchableOpacity
+                key={chat.id}
+                style={styles.groupChatItem}
+                onPress={() => {
+                  navigation.navigate("GroupChat");
+                }}
+              >
                 <View style={styles.chatLeft}>
                   <Text style={styles.chatIcon}>
                     {chat.isPrivate ? "🔒" : "#"}
