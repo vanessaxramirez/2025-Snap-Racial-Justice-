@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from "react";
-import {
-  Text,
-  View,
-  Modal,
-  Button,
-  StyleSheet,
-  TextInput,
-  Image,
-} from "react-native";
-import { TouchableOpacity, ScrollView } from "react-native";
+import { Text, View, Modal, StyleSheet, Image } from "react-native";
+import { TouchableOpacity, ScrollView, FlatList } from "react-native";
+import { badges } from "../../assets/badgesArray";
 
-export default function Badges() {
+export default function BadgesScreen() {
   const [activeTab, setActiveTab] = useState("All");
+
+  let filteredBadges = badges;
+  if (activeTab === "Locked") {
+    filteredBadges = badges.filter((badge) => badge.name.endsWith("Grey"));
+  } else if (activeTab === "Unlocked") {
+    filteredBadges = badges.filter((badge) => !badge.name.endsWith("Grey"));
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.tabsRow}>
-        {["All", "Locked", "Unlocked"].map((tab) => (
+        {["All", "Unlocked", "Locked"].map((tab) => (
           <TouchableOpacity
             key={tab}
             style={[styles.tab, activeTab === tab && styles.activeTab]}
@@ -30,17 +30,17 @@ export default function Badges() {
           </TouchableOpacity>
         ))}
       </View>
-      <View style={styles.contentBox}>
-        {activeTab == "All" && (
-          <Text style={styles.contentText}> Show Badges Here</Text>
+      <FlatList
+        data={filteredBadges}
+        keyExtractor={(badge) => badge.name}
+        numColumns={3}
+        contentContainerStyle={styles.badgeGrid}
+        renderItem={({ item }) => (
+          <View style={styles.badgeCard}>
+            <Image source={item.image} style={styles.badgeImage} />
+          </View>
         )}
-        {activeTab == "Locked" && (
-          <Text style={styles.contentText}> Show Badges Here</Text>
-        )}
-        {activeTab == "Unlocked" && (
-          <Text style={styles.contentText}> Show Badges Here</Text>
-        )}
-      </View>
+      />
     </View>
   );
 }
@@ -93,5 +93,26 @@ const styles = StyleSheet.create({
   contentText: {
     fontSize: 18,
     color: "#333",
+  },
+  badgeCard: {
+    width: "30%",
+    aspectRatio: 1,
+    margin: "1.5%",
+    backgroundColor: "#f9f9f9",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  badgeImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+    borderRadius: 10,
   },
 });
