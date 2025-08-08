@@ -20,33 +20,35 @@ const Stack = createStackNavigator();
 export default function Header({ title }) {
   const navigation = useNavigation();
 
-  const [profilePicUrl, setProfilePicUrl] = useState("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShLAGSlShdMBNrS74GAYZwCxd9J7STjxNEHQ&s",);
+  const [profilePicUrl, setProfilePicUrl] = useState(
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShLAGSlShdMBNrS74GAYZwCxd9J7STjxNEHQ&s"
+  );
 
   const { user } = useAuthentication();
 
-  
   useFocusEffect(
-   useCallback(() => {
-    async function fetchProfilePic() {
-      if (user === null) {
-        return;
+    useCallback(() => {
+      async function fetchProfilePic() {
+        if (user === null) {
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("avatar_url")
+          .eq("id", user.id)
+          .single();
+
+        if (error) {
+          console.log("Profile pic fetch failure");
+        } else if (data.avatar_url) {
+          setProfilePicUrl(data.avatar_url);
+        }
       }
 
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("avatar_url")
-        .eq("id", user.id)
-        .single();
-
-      if (error) {
-        console.log("Profile pic fetch failure");
-      } else if (data.avatar_url) {
-        setProfilePicUrl(data.avatar_url);
-      }
-    }
-
-    fetchProfilePic();
-  }, [user]));
+      fetchProfilePic();
+    }, [user])
+  );
 
   const [showMenu, setShowMenu] = useState(false);
   // console.log(showMenu);
@@ -127,6 +129,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 24,
   },
   title: {
     textAlign: "center",

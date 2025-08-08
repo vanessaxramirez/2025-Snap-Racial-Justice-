@@ -57,7 +57,12 @@ export default function CommunitiesScreen() {
           }}
         >
           <View style={styles.communityCard}>
-            <Text style={styles.cardText}>Community Name 1</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Org Page", {});
+              }}
+            ></TouchableOpacity>
+            <Text style={styles.cardText}>Hispanic Heritage Foundation</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -66,7 +71,12 @@ export default function CommunitiesScreen() {
           }}
         >
           <View style={styles.communityCard}>
-            <Text style={styles.cardText}>Community Name 2</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Org Page", {});
+              }}
+            ></TouchableOpacity>
+            <Text style={styles.cardText}>ColorStack</Text>
           </View>
         </TouchableOpacity>
         <TouchableOpacity
@@ -75,7 +85,12 @@ export default function CommunitiesScreen() {
           }}
         >
           <View style={styles.communityCard}>
-            <Text style={styles.cardText}>Community Name 3</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("Org Page", {});
+              }}
+            ></TouchableOpacity>
+            <Text style={styles.cardText}>America Needs You </Text>
           </View>
         </TouchableOpacity>
       </ScrollView>

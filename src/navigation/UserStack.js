@@ -101,7 +101,7 @@ export default function App() {
           options={{ headerShown: true }}
         />
         <Stack.Screen
-          name="GroupChat"
+          name="General Chat"
           component={GroupChatScreen}
           options={{ headerShown: true }}
         />

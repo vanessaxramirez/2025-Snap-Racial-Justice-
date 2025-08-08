@@ -134,7 +134,7 @@ export default function NonProfitScreen() {
                 key={chat.id}
                 style={styles.groupChatItem}
                 onPress={() => {
-                  navigation.navigate("GroupChat");
+                  navigation.navigate("General Chat");
                 }}
               >
                 <View style={styles.chatLeft}>
