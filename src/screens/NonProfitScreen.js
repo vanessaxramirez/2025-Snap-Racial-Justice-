@@ -115,11 +115,13 @@ export default function NonProfitScreen() {
               <Text style={styles.textButton}>Read More</Text>
             </TouchableOpacity>
 
+
             {/* Notification Bell */}
             <TouchableOpacity
               onPress={() => console.log("Notification pressed")}
               style={styles.notificationButton}
             >
+
               {/* Invite Button */}
               <Icon name="notifications-outline" size={20} color="#000" />
             </TouchableOpacity>
@@ -129,7 +131,7 @@ export default function NonProfitScreen() {
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Icon name="person-add-outline" size={17} color="#000" />
-                <Text style={styles.inviteText}> Invite</Text>
+                <Text style={styles.inviteText}>  Invite</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -167,8 +169,6 @@ export default function NonProfitScreen() {
             ))}
           </ScrollView>
         </View>
-
-        {/* Badges */}
 
         {/* {Group/Member tabs} */}
         <View style={styles.tabContainer}>
@@ -292,6 +292,41 @@ export default function NonProfitScreen() {
                 </View>
               ))}
           </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+        {/* Conditional Rendering for tabs */}
+        {selectedTab === "Groups" ? (
+          <View style={styles.groupCardContainer}>
+            {groupChats.map((chat) => (
+              <TouchableOpacity key={chat.id} style={styles.groupChatItem}>
+                <View style={styles.chatLeft}>
+                  <Text style={styles.chatIcon}>
+                    {chat.isPrivate ? "🔒" : "#"}
+                  </Text>
+                </View>
+
+                <View style={styles.chatMiddle}>
+                  <Text style={styles.chatTitle}>{chat.name}</Text>
+                  <Text style={styles.chatDescription}>{chat.description}</Text>
+                </View>
+
+                <View style={styles.chatRight}>
+                  <Text style={styles.chatArrow}>›</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : (
+          <View style={{ width: "100%", padding: 10 }}>
+            {members.map((member) => (
+              <TouchableOpacity key={member.id}>
+                <Text style={styles.infoText}>{member.user}</Text>
+                <Text style={styles.infoText}>{member.role}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         )}
       </ScrollView>
     </View>
@@ -406,6 +441,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
     borderRadius: 3,
   },
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: "center",
+    paddingBottom: 12,
+  },
+  tabText: {
+    fontSize: 16,
+    color: "#999",
+    fontWeight: "500",
+  },
+  activeTabText: {
+    color: "#000",
+    fontWeight: "600",
+  },
+  activeTabLine: {
+    position: "absolute",
+    bottom: 0,
+    height: 2,
+    width: 40,
+    backgroundColor: "#000",
+    borderRadius: 1,
+  },
   groupCardContainer: {
     backgroundColor: "white",
     borderRadius: 16,
@@ -417,7 +475,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-
   groupChatItem: {
     flexDirection: "row",
     alignItems: "center",
@@ -426,7 +483,6 @@ const styles = StyleSheet.create({
     borderBottomColor: "#eee",
     borderBottomWidth: 1,
   },
-
   chatLeft: {
     marginRight: 12,
   },
@@ -637,5 +693,60 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 8,
+  },
+
+  chatIcon: {
+    fontSize: 30,
+  },
+
+  chatMiddle: {
+    flex: 1,
+  },
+
+  chatTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+  },
+
+  chatDescription: {
+    fontSize: 13,
+    color: "#555",
+    marginTop: 2,
+  },
+
+  chatRight: {
+    marginLeft: 12,
+  },
+
+  chatArrow: {
+    fontSize: 30,
+    color: "#888",
+  },
+  notificationButton: {
+    width: 60,
+    height: 40,
+    marginLeft: 10,
+    backgroundColor: "#e2e5e7ff",
+    borderRadius: 30,
+    justifyContent: "center", // ✅ center vertically
+    alignItems: "center", // ✅ center horizontally
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  inviteButton: {
+    width: 80,
+    height: 40,
+    marginLeft: 10,
+    backgroundColor: "#e2e5e7ff",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
 });
