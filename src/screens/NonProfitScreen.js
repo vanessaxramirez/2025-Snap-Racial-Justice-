@@ -24,11 +24,9 @@ export default function NonProfitScreen() {
     const groupChatCall = async () => {
       try {
         const { data, error } = await supabase.from("group_chats").select("*");
-        console.log("inside call", data);
         if (error) {
           console.error("Error fetching group chats:", error);
         } else {
-          console.log("fetch from supabase", data);
           setGroupChats(data);
         }
       } catch (error) {
@@ -39,12 +37,10 @@ export default function NonProfitScreen() {
     groupChatCall();
 
     const fetchPinnedStories = async () => {
-      console.log("inside fetch for stories");
       try {
         const { data, error } = await supabase
           .from("pinned_stories")
           .select("*");
-        console.log("→ Supabase returned:", { data, error });
         if (error) {
           console.error("Error fetching pinned stories:", error);
         } else {
@@ -60,11 +56,9 @@ export default function NonProfitScreen() {
     const membersCall = async () => {
       try {
         const { data, error } = await supabase.from("members").select("*");
-        console.log("inside call to members", data);
         if (error) {
           console.error("Error fetching members list:", error);
         } else {
-          console.log("fetch from supabase - members", data);
           setMembers(data);
         }
       } catch (error) {
@@ -83,15 +77,12 @@ export default function NonProfitScreen() {
   const roleLabels = {
     super_star_admin: "SUPER STAR ADMINS",
     flower_mentor: "FLOWER MENTORS",
-    // add more as needed...
   };
-
-  //   console.log(groupChats)
 
   return (
     <View style={{ flex: 1, position: "relative" }}>
       <ImageBackground
-        source={require("../../assets/BGC.png")} // Replace with your image
+        source={require("../../assets/BGC.png")}
         style={styles.headerBackground}
       />
       <ScrollView contentContainerStyle={styles.mainContainer}>
@@ -102,53 +93,47 @@ export default function NonProfitScreen() {
             }}
             style={styles.image}
           />
-
-          {/* Name and Growth Circle */}
           <View style={{ marginTop: 20, marginLeft: 5 }}>
             <Text style={styles.groupName}>Non-Profit name</Text>
             <Text style={styles.growthCircle}>Growth Circle · 237 Members</Text>
           </View>
         </View>
+
         <View style={{ backgroundColor: "white" }}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={styles.readMoreButton}>
               <Text style={styles.textButton}>Read More</Text>
             </TouchableOpacity>
 
-
-            {/* Notification Bell */}
             <TouchableOpacity
               onPress={() => console.log("Notification pressed")}
               style={styles.notificationButton}
             >
-
-              {/* Invite Button */}
               <Icon name="notifications-outline" size={20} color="#000" />
             </TouchableOpacity>
+
             <TouchableOpacity
               onPress={() => console.log("Invite pressed")}
               style={styles.inviteButton}
             >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
                 <Icon name="person-add-outline" size={17} color="#000" />
-                <Text style={styles.inviteText}>  Invite</Text>
+                <Text style={styles.inviteText}>Invite</Text>
               </View>
             </TouchableOpacity>
           </View>
 
-          {/* Circle Description */}
           <Text style={styles.caption}>
             This Growth Circle and Growth Circle Group Chats are affiliated and
-            managed by Black Girls who Code (BGC). Violation of Snapchat’s
+            managed by Black Girls who Code (BGC). Violation of Snapchat's
             Community Guidelines could lead to blocking from Communities or an
             account lock.
           </Text>
         </View>
 
-        {/* Stories  */}
         <View style={styles.storiesView}>
           <Text style={styles.sectionHeader}>Pinned Stories</Text>
-          <ScrollView horizontal showsHorirzontalScrollIndicator={false}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {pinnedStories.map((story) => (
               <TouchableOpacity key={story.id} style={styles.storyCard}>
                 <View style={styles.storyImageWrapper}>
@@ -170,7 +155,6 @@ export default function NonProfitScreen() {
           </ScrollView>
         </View>
 
-        {/* {Group/Member tabs} */}
         <View style={styles.tabContainer}>
           <View style={styles.tabRow}>
             {["Groups", "Members"].map((tab) => (
@@ -193,7 +177,6 @@ export default function NonProfitScreen() {
           </View>
         </View>
 
-        {/* Conditional Rendering for tabs */}
         {selectedTab === "Groups" ? (
           <View style={styles.groupCardContainer}>
             {groupChats.map((chat) => (
@@ -203,21 +186,18 @@ export default function NonProfitScreen() {
                     {chat.isPrivate ? (
                       <Icon
                         name="lock-closed"
-                        // size={24}
                         color="#000"
                         style={styles.lockIcon}
                       />
                     ) : (
-                      <Text style={styles.hashIcon}>#</Text>
+                      "#"
                     )}
                   </Text>
                 </View>
-
                 <View style={styles.chatMiddle}>
                   <Text style={styles.chatTitle}>{chat.name}</Text>
                   <Text style={styles.chatDescription}>{chat.description}</Text>
                 </View>
-
                 <View style={styles.chatRight}>
                   <Text style={styles.chatArrow}>›</Text>
                 </View>
@@ -226,8 +206,6 @@ export default function NonProfitScreen() {
           </View>
         ) : (
           <View>
-            {/* ========== MEMBERS GROUPED BY ROLE ============= */}
-
             {Object.entries(membersByRole)
               .sort(
                 ([roleA], [roleB]) =>
@@ -238,7 +216,6 @@ export default function NonProfitScreen() {
                   <Text style={styles.userRole}>
                     {roleLabels[roleKey] || roleKey.toUpperCase()}
                   </Text>
-
                   <View style={styles.membersCardContainer}>
                     <View style={styles.membersContainer}>
                       {list.map((member, idx) => (
@@ -249,7 +226,6 @@ export default function NonProfitScreen() {
                             idx === list.length - 1 && { borderBottomWidth: 0 },
                           ]}
                         >
-                          {/* LEFT: Avatar + Name/Username */}
                           <View style={styles.memberInfo}>
                             <Image
                               source={{ uri: member.profilePhoto }}
@@ -264,8 +240,6 @@ export default function NonProfitScreen() {
                               </Text>
                             </View>
                           </View>
-
-                          {/* RIGHT: Add + Remove */}
                           <View style={styles.memberActions}>
                             <TouchableOpacity
                               style={styles.addButton}
@@ -292,41 +266,6 @@ export default function NonProfitScreen() {
                 </View>
               ))}
           </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-        {/* Conditional Rendering for tabs */}
-        {selectedTab === "Groups" ? (
-          <View style={styles.groupCardContainer}>
-            {groupChats.map((chat) => (
-              <TouchableOpacity key={chat.id} style={styles.groupChatItem}>
-                <View style={styles.chatLeft}>
-                  <Text style={styles.chatIcon}>
-                    {chat.isPrivate ? "🔒" : "#"}
-                  </Text>
-                </View>
-
-                <View style={styles.chatMiddle}>
-                  <Text style={styles.chatTitle}>{chat.name}</Text>
-                  <Text style={styles.chatDescription}>{chat.description}</Text>
-                </View>
-
-                <View style={styles.chatRight}>
-                  <Text style={styles.chatArrow}>›</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        ) : (
-          <View style={{ width: "100%", padding: 10 }}>
-            {members.map((member) => (
-              <TouchableOpacity key={member.id}>
-                <Text style={styles.infoText}>{member.user}</Text>
-                <Text style={styles.infoText}>{member.role}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
         )}
       </ScrollView>
     </View>
@@ -336,16 +275,14 @@ export default function NonProfitScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     justifyContent: "space-between",
-    // backgroundColor: "white",
   },
   scrollContent: {
     flexDirection: "row",
     backgroundColor: "white",
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    marginTop: 225, // adjust this to the height of your header
+    marginTop: 225,
     padding: 5,
-    // paddingBottom: 60,
   },
   headerBackground: {
     position: "absolute",
@@ -359,8 +296,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 170,
-    // marginBottom: 12,
-    // backgroundColor: "white"
   },
   image: {
     margin: 5,
@@ -383,12 +318,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     marginTop: "5%",
-    // backgroundColor: "white"
   },
   container: {
     flexDirection: "row",
     justifyContent: "space-around",
-    // paddingBottom: 10,
     backgroundColor: "white",
     paddingVertical: 20,
   },
@@ -398,8 +331,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     backgroundColor: "#0FADFF",
     borderRadius: 30,
-    justifyContent: "center", // ✅ center vertically
-    alignItems: "center", // ✅ center horizontally
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -418,29 +351,6 @@ const styles = StyleSheet.create({
   tabRow: {
     flexDirection: "row",
     paddingHorizontal: 16,
-  },
-  tabButton: {
-    flex: 1,
-    alignItems: "center",
-    paddingBottom: 12,
-  },
-  tabText: {
-    fontSize: 18,
-    color: "#999",
-    fontWeight: "500",
-  },
-  activeTabText: {
-    color: "#000",
-    fontWeight: "700",
-  },
-  activeTabLine: {
-    position: "absolute",
-    bottom: 0,
-    height: 3,
-    width: 200,
-    backgroundColor: "#000",
-    borderRadius: 3,
-  },
   },
   tabButton: {
     flex: 1,
@@ -486,35 +396,28 @@ const styles = StyleSheet.create({
   chatLeft: {
     marginRight: 12,
   },
-
-  // Chat Icons
   hashIcon: {
     fontSize: 30,
   },
   lockIcon: {
     fontSize: 25,
   },
-
   chatMiddle: {
     flex: 1,
   },
-
   chatTitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
   },
-
   chatDescription: {
     fontSize: 13,
     color: "#555",
     marginTop: 2,
   },
-
   chatRight: {
     marginLeft: 12,
   },
-
   chatArrow: {
     fontSize: 30,
     color: "#888",
@@ -525,8 +428,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     backgroundColor: "#e2e5e7ff",
     borderRadius: 30,
-    justifyContent: "center", // ✅ center vertically
-    alignItems: "center", // ✅ center horizontally
+    justifyContent: "center",
+    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -545,7 +448,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 3,
   },
-  // === Pinned Stories Section ===
   storiesView: {
     backgroundColor: "white",
   },
@@ -557,29 +459,25 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     color: "#000",
   },
-
   storyCard: {
     alignItems: "center",
     marginRight: 16,
     width: 90,
   },
-
   storyImageWrapper: {
     borderRadius: 50,
     borderWidth: 2,
-    borderColor: "#00BFFF", // sky blue ring
+    borderColor: "#00BFFF",
     padding: 3,
     position: "relative",
-    backgroundColor: "#fff", // inner background for contrast
+    backgroundColor: "#fff",
   },
-
   storyImage: {
     width: 70,
     height: 70,
     borderRadius: 35,
     resizeMode: "cover",
   },
-
   storyTitle: {
     marginTop: 6,
     fontWeight: "600",
@@ -588,18 +486,15 @@ const styles = StyleSheet.create({
     color: "#000",
     maxWidth: 80,
   },
-
   starBadge: {
     position: "absolute",
     bottom: 0,
     right: 0,
-    backgroundColor: "#FFD700", // gold
+    backgroundColor: "#FFD700",
     borderRadius: 10,
     padding: 2,
     zIndex: 2,
   },
-
-  // ====== Members Tab ======
   userRole: {
     fontSize: 15,
     fontWeight: "600",
@@ -612,15 +507,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 1,
     borderColor: "#eee",
-    // shadow for iOS
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 4,
-    // elevation for Android
     elevation: 2,
   },
-
   memberRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -630,41 +522,34 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#f0f0f0",
   },
-
   memberInfo: {
     flexDirection: "row",
     alignItems: "center",
     flex: 1,
   },
-
   memberAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
     marginRight: 12,
   },
-
   memberText: {
     flexShrink: 1,
   },
-
   memberName: {
     fontSize: 16,
     fontWeight: "600",
     color: "#000",
   },
-
   memberUsername: {
     fontSize: 13,
     color: "#666",
     marginTop: 2,
   },
-
   memberActions: {
     flexDirection: "row",
     alignItems: "center",
   },
-
   addButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -674,18 +559,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
   },
-
   addButtonText: {
     marginLeft: 4,
     fontSize: 14,
     fontWeight: "500",
   },
-
   removeButton: {
     padding: 8,
   },
   membersCardContainer: {
-    // backgroundColor: "white",
     borderRadius: 12,
     paddingVertical: 8,
     marginHorizontal: 7,
@@ -693,60 +575,5 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 8,
-  },
-
-  chatIcon: {
-    fontSize: 30,
-  },
-
-  chatMiddle: {
-    flex: 1,
-  },
-
-  chatTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#000",
-  },
-
-  chatDescription: {
-    fontSize: 13,
-    color: "#555",
-    marginTop: 2,
-  },
-
-  chatRight: {
-    marginLeft: 12,
-  },
-
-  chatArrow: {
-    fontSize: 30,
-    color: "#888",
-  },
-  notificationButton: {
-    width: 60,
-    height: 40,
-    marginLeft: 10,
-    backgroundColor: "#e2e5e7ff",
-    borderRadius: 30,
-    justifyContent: "center", // ✅ center vertically
-    alignItems: "center", // ✅ center horizontally
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  },
-  inviteButton: {
-    width: 80,
-    height: 40,
-    marginLeft: 10,
-    backgroundColor: "#e2e5e7ff",
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
 });
