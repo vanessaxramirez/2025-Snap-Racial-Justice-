@@ -40,10 +40,6 @@ export const badges = [
     image: require("./badges/Apprentice_LvlThree_Grey.png"),
   },
   {
-    name: "Apprentice_LvlThree_Grey",
-    image: require("./badges/Apprentice_LvlThree_Grey.png"),
-  },
-  {
     name: "Apprentice_LvlSeven_Grey",
     image: require("./badges/Apprentice_LvlSeven_Grey.png"),
   },

@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, Button, StyleSheet, TextInput, Image } from "react-native";
+import React, { useState, useEffect, useMemo } from "react";
+import { Text, View, Button, StyleSheet, TextInput } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
 import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Image } from "expo-image";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
   const [userVerfication, setUserVerification] = useState("");
   const { user } = useAuthentication();
   const [communities, setCommunities] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     const communitiesCall = async () => {
@@ -60,22 +63,36 @@ export default function CommunitiesScreen() {
     }
   }
 
+  const filteredCommunities = useMemo(() => {
+    const q = searchText.trim().toLowerCase();
+    if (!q) return communities;
+    return communities.filter((c) =>
+      (c.orgName || "").toLowerCase().includes(q)
+    );
+  }, [communities, searchText]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Find your Growth Circle</Text>
-      <TouchableOpacity
-        style={styles.searchButton}
-        onPress={() => {
-          navigation.navigate("GC Search", {});
-        }}
-      >
-        <Text style={styles.searchButtonText}>Search for Growth Circle</Text>
-      </TouchableOpacity>
+      <View style={styles.searchContainer}>
+        <Icon
+          name="search-sharp"
+          size={25}
+          // color="#888"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          placeholder="Search communities..."
+          style={styles.searchBar}
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+      </View>
 
       {/* After Search bar */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.groupCardContainer}>
-          {communities.map((community) => (
+          {filteredCommunities.map((community) => (
             <TouchableOpacity
               key={community.id || community.orgName}
               style={styles.groupRow}
@@ -89,7 +106,10 @@ export default function CommunitiesScreen() {
                     uri: community.orgPhoto,
                   }}
                   style={styles.image}
-                  resizeMode="cover"
+                  transition={150}
+                  cachePolicy="memory-disk"
+                  placeholder={null}
+                  // resizeMode="cover"
                   onError={(e) => {
                     console.log(
                       "Image load error:",
@@ -123,18 +143,29 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#ffffff",
   },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f0f0f0",
+    borderRadius: 25,
+    paddingHorizontal: 10,
+    borderColor: "#ccc",
+    borderWidth: 1,
+  },
+  searchIcon: {
+    marginRight: 6,
+    color: "#444",
+  },
+  searchBar: {
+    flex: 1,
+    height: 40,
+    fontSize: 16,
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 12,
     textAlign: "center",
-  },
-  searchButton: {
-    backgroundColor: "#363b44ff",
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
-    marginBottom: 20,
   },
   searchButtonText: {
     color: "#fff",
@@ -155,11 +186,10 @@ const styles = StyleSheet.create({
   groupCardContainer: {
     backgroundColor: "white",
     borderRadius: 16,
-    // paddingVertical: 8,
-    marginHorizontal: 5,
-    marginTop: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
+    marginHorizontal: 1,
+    marginTop: 16,
+    shadowColor: "#111",
+    shadowOpacity: 0.2,
     shadowRadius: 5,
     elevation: 4,
   },
