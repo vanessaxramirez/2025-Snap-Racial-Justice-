@@ -28,7 +28,13 @@ export default function App() {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="FriendStory"
@@ -43,7 +49,13 @@ export default function App() {
         <Stack.Screen
           name="Conversation"
           component={ConversationScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="DiscoverCard"
@@ -68,7 +80,9 @@ export default function App() {
         <Stack.Screen
           name="Settings"
           component={SettingsScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerShown: true,
+          }}
         />
         <Stack.Screen
           name="Event"
@@ -78,32 +92,68 @@ export default function App() {
         <Stack.Screen
           name="Communities"
           component={CommunitiesScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="GC Search"
           component={GCSearchScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="Verification Page"
           component={VerificationScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="Org Page"
           component={NonProfitScreen}
-          // options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="Badges"
           component={BadgesScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
         <Stack.Screen
           name="General Chat"
           component={GroupChatScreen}
-          options={{ headerShown: true }}
+          options={{
+            headerTitle: "",
+            headerShown: true,
+            headerTransparent: true,
+            headerBackTitleVisible: false,
+            headerTintColor: "#000000",
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>

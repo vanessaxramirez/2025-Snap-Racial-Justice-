@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 14,
     marginTop: 5,
+    marginBottom: 50,
   },
   readMoreButton: {
     flex: 1,
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
   inviteButton: {
     width: 80,
     height: 40,
-    marginLeft: 10,
+    marginLeft: 15,
     backgroundColor: "#e2e5e7ff",
     borderRadius: 30,
     justifyContent: "center",
@@ -269,6 +270,7 @@ const styles = StyleSheet.create({
   storyRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 25,
   },
   storyBubble: {
     width: 54,
@@ -306,11 +308,13 @@ const styles = StyleSheet.create({
     elevation: 2,
     borderWidth: 1,
     borderColor: "#eee",
+    marginBottom: 25,
   },
   cardContent: {
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
+    marginBottom: 25,
   },
   cardText: {
     flex: 1,

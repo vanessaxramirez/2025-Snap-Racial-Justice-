@@ -44,7 +44,7 @@ export default function GroupChatScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>General Chat</Text>
+      <Text style={styles.header}> Growth Circle Chat</Text>
       <FlatList
         ref={containerRef}
         data={messages}
@@ -112,7 +112,13 @@ export default function GroupChatScreen({ route, navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fff" },
-  header: { fontSize: 20, fontWeight: "bold", margin: 16, textAlign: "center" },
+  header: {
+    fontSize: 20,
+    fontWeight: "bold",
+    margin: 16,
+    textAlign: "center",
+    marginVertical: 63,
+  },
 
   messageContainer: {
     marginVertical: 8,
