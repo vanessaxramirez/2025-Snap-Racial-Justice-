@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, Button, StyleSheet, TextInput, Image } from "react-native";
+import { Text, View, StyleSheet, TextInput, Image } from "react-native";
 import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
 import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
@@ -39,6 +40,33 @@ export default function CommunitiesScreen() {
     }
   }
 
+  const communities = [
+    {
+      id: 1,
+      name: "Hispanic Heritage Foundation",
+      members: 237,
+      image:
+        "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
+      subtitle: "Growth Circle · 237 Members",
+    },
+    {
+      id: 2,
+      name: "ColorStack",
+      members: 120,
+      image:
+        "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
+      subtitle: "Growth Circle · 120 Members",
+    },
+    {
+      id: 3,
+      name: "America Needs You",
+      members: 98,
+      image:
+        "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
+      subtitle: "Growth Circle · 98 Members",
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Your Communities</Text>
@@ -51,48 +79,26 @@ export default function CommunitiesScreen() {
         <Text style={styles.searchButtonText}>Search for Growth Circle</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <TouchableOpacity
-          onPress={() => {
-            handleCorrectPageNav();
-          }}
-        >
-          <View style={styles.communityCard}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Org Page", {});
-              }}
-            ></TouchableOpacity>
-            <Text style={styles.cardText}>Hispanic Heritage Foundation</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            handleCorrectPageNav();
-          }}
-        >
-          <View style={styles.communityCard}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Org Page", {});
-              }}
-            ></TouchableOpacity>
-            <Text style={styles.cardText}>ColorStack</Text>
-          </View>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            handleCorrectPageNav();
-          }}
-        >
-          <View style={styles.communityCard}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Org Page", {});
-              }}
-            ></TouchableOpacity>
-            <Text style={styles.cardText}>America Needs You </Text>
-          </View>
-        </TouchableOpacity>
+        {communities.map((community) => (
+          <TouchableOpacity
+            key={community.id}
+            style={styles.communityCard}
+            onPress={handleCorrectPageNav}
+            activeOpacity={0.85}
+          >
+            <Image source={{ uri: community.image }} style={styles.avatar} />
+            <View style={styles.cardTextContainer}>
+              <Text style={styles.cardTitle}> {community.name}</Text>
+              <Text style={styles.cardSubtitle}> {community.subtitle}</Text>
+            </View>
+            <Icon
+              name="chevron-forward"
+              size={28}
+              color="#bbb"
+              style={styles.arrowIcon}
+            />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -101,21 +107,29 @@ export default function CommunitiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#ffffff",
+    padding: 0,
+    backgroundColor: "#f8f8f8",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginTop: 32,
     marginBottom: 12,
     textAlign: "center",
+    color: "#222",
   },
   searchButton: {
-    backgroundColor: "#363b44ff",
+    backgroundColor: "#0FADFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
+    marginHorizontal: 24,
     marginBottom: 20,
+    shadowColor: "#0FADFF",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 2,
   },
   searchButtonText: {
     color: "#fff",
@@ -124,16 +138,43 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 30,
+    paddingHorizontal: 12,
   },
   communityCard: {
-    backgroundColor: "#eeeeee",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 16,
-    marginBottom: 12,
-    alignItems: "center",
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  cardText: {
-    fontSize: 16,
+  avatar: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    marginRight: 14,
+    backgroundColor: "#eee",
+  },
+  cardTextContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#222",
+    marginBottom: 2,
+  },
+  cardSubtitle: {
+    fontSize: 14,
+    color: "#888",
     fontWeight: "500",
+  },
+  arrowIcon: {
+    marginLeft: 8,
   },
 });
