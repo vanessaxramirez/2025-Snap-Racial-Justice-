@@ -1,10 +1,7 @@
 import {
-  Image,
   Text,
   View,
-  Button,
   StyleSheet,
-  Pressable,
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
@@ -13,8 +10,14 @@ import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
+import { Image } from "expo-image";
+import { badges } from "../../assets/badgesArray";
 
 export default function NonProfitScreen() {
+  const route = useRoute();
+  const { id: growthCircleID } = route.params;
+  const [organization, setOrganization] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const [members, setMembers] = useState([]);
   const [selectedTab, setSelectedTab] = useState("Groups");
@@ -23,20 +26,60 @@ export default function NonProfitScreen() {
   const roleOrder = ["Admins", "Mentors", "Sprouts"];
 
   useEffect(() => {
-    const groupChatCall = async () => {
+    const orgDataCall = async () => {
       try {
-        const { data, error } = await supabase.from("group_chats").select("*");
+        const { data, error } = await supabase
+          .from("growthCircles")
+          .select("*")
+          .eq("id", growthCircleID);
+        // console.log("grabbing specific group data: ", data);
         if (error) {
-          console.error("Error fetching group chats:", error);
+          console.error("Error fetching group:", error);
         } else {
-          setGroupChats(data);
+          setOrganization(data);
+          console.log("i just sent these", organization);
+          const orgRow = data[0];
+          const ids = orgRow.orgChats;
+          // console.log("orgChats ids from growthCircles:", ids);
+          if (!ids.length) {
+            setGroupChats([]);
+            return;
+          }
+
+          const { data: chats, error: chatsError } = await supabase
+            .from("group_chats")
+            .select("*")
+            .in("id", ids);
+
+          if (chatsError) {
+            console.error("Error fetching group chats:", chatsError);
+          } else {
+            setGroupChats(chats);
+          }
         }
       } catch (error) {
         console.error("Unexpected error:", error);
       }
     };
 
-    groupChatCall();
+    if (growthCircleID) {
+      orgDataCall();
+    }
+
+    // const groupChatCall = async () => {
+    //   try {
+    //     const { data, error } = await supabase.from("group_chats").select("*");
+    //     if (error) {
+    //       console.error("Error fetching group chats:", error);
+    //     } else {
+    //       setGroupChats(data);
+    //     }
+    //   } catch (error) {
+    //     console.error("Unexpected error:", error);
+    //   }
+    // };
+
+    // groupChatCall();
 
     const fetchPinnedStories = async () => {
       try {
@@ -68,7 +111,7 @@ export default function NonProfitScreen() {
       }
     };
     membersCall();
-  }, []);
+  }, [growthCircleID]);
 
   const membersByRole = members.reduce((acc, member) => {
     if (!acc[member.role]) acc[member.role] = [];
@@ -83,24 +126,40 @@ export default function NonProfitScreen() {
 
   return (
     <View style={{ flex: 1, position: "relative" }}>
-      <ImageBackground
-        source={require("../../assets/BGC.png")}
-        style={styles.headerBackground}
-      />
-      <ScrollView contentContainerStyle={styles.mainContainer}>
-        <View style={styles.scrollContent}>
-          <Image
-            source={{
-              uri: "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
-            }}
-            style={styles.image}
-          />
-          <View style={{ marginTop: 20, marginLeft: 5 }}>
-            <Text style={styles.groupName}>Non-Profit name</Text>
-            <Text style={styles.growthCircle}>Growth Circle · 237 Members</Text>
-          </View>
-        </View>
+      {/* Organization Header */}
+      {organization.map((org) => (
+        <Image
+          source={{ uri: org.headerImage }}
+          style={styles.headerBackground}
+          transition={150}
+          cachePolicy="memory-disk"
+          placeholder={null}
+        />
+      ))}
 
+      {/* Profile Photo and Org's Name / number of members */}
+      <ScrollView contentContainerStyle={styles.mainContainer}>
+        {organization.map((org) => (
+          <View key={org.id} style={styles.scrollContent}>
+            <Image
+              source={{
+                uri: org.orgPhoto,
+              }}
+              style={styles.image}
+              transition={150}
+              cachePolicy="memory-disk"
+              placeholder={null}
+            />
+            <View style={{ marginTop: 20, marginLeft: 5 }}>
+              <Text style={styles.groupName}>{org.orgName}</Text>
+              <Text style={styles.growthCircle}>
+                Growth Circle · 237 Members
+              </Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Notification Bell/ Invite buttons */}
         <View style={{ backgroundColor: "white" }}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={styles.readMoreButton}>
@@ -125,38 +184,88 @@ export default function NonProfitScreen() {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.caption}>
-            This Growth Circle and Growth Circle Group Chats are affiliated and
-            managed by Black Girls who Code (BGC). Violation of Snapchat's
-            Community Guidelines could lead to blocking from Communities or an
-            account lock.
-          </Text>
+          {/* OrgCaption */}
+          {organization.map((org) => (
+            <Text style={styles.caption}>{org.orgCaption}</Text>
+          ))}
         </View>
 
+        {/* Pinned Stories */}
         <View style={styles.storiesView}>
           <Text style={styles.sectionHeader}>Pinned Stories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {pinnedStories.map((story) => (
-              <TouchableOpacity key={story.id} style={styles.storyCard}>
-                <View style={styles.storyImageWrapper}>
-                  <Image
-                    source={{
-                      uri: "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
-                    }}
-                    style={styles.storyImage}
-                  />
-                  {story.is_featured && (
-                    <View style={styles.starBadge}>
-                      <Icon name="star" size={14} color="black" />
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.storyTitle}>{story.title}</Text>
-              </TouchableOpacity>
-            ))}
+            {[...pinnedStories]
+              .sort((a, b) => (a.is_featured ? -1 : b.is_featured ? 1 : 0))
+              .map((story) => (
+                <TouchableOpacity key={story.id} style={styles.storyCard}>
+                  <View style={styles.storyImageWrapper}>
+                    <Image
+                      source={{
+                        uri: story.imageURL,
+                      }}
+                      style={styles.storyImage}
+                      transition={150}
+                      cachePolicy="memory-disk"
+                      placeholder={null}
+                    />
+                    {story.is_featured && (
+                      <View style={styles.starBadge}>
+                        <Icon name="star" size={14} color="black" />
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.storyTitle}>{story.title}</Text>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
 
+        {/* Community Badges */}
+        <View style={{ backgroundColor: "white", height: 180 }}>
+          <View style={styles.badgesHeaderRow}>
+            <Text style={styles.sectionHeader}>Community Badges</Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Badges")}>
+              <Text style={styles.badgesViewAll}>View All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.badgesCard}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.badgesRow}
+            >
+              {badges
+                .filter((b) =>
+                  [
+                    "Apprentice_LvlSix",
+                    "Apprentice_LvlEight_Grey",
+                    "Apprentice_LvlNine_Grey",
+                    "Apprentice_LvlThree_Grey",
+                    "Apprentice_LvlSeven_Grey",
+                  ].includes(b.name)
+                )
+                .map((badge, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    style={styles.badgeWrap}
+                    activeOpacity={0.85}
+                    onPress={() => console.log("Pressed badge:", badge.name)}
+                  >
+                    <Image
+                      source={badge.image}
+                      style={styles.badgeIcon}
+                      transition={150}
+                      cachePolicy="memory-disk"
+                      placeholder={null}
+                    />
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
+          </View>
+        </View>
+
+        {/* Group/Members Slider */}
         <View style={styles.tabContainer}>
           <View style={styles.tabRow}>
             {["Groups", "Members"].map((tab) => (
@@ -179,38 +288,47 @@ export default function NonProfitScreen() {
           </View>
         </View>
 
+        {/* Displaying Chats or Members */}
         {selectedTab === "Groups" ? (
           <View style={styles.groupCardContainer}>
-            {groupChats.map((chat) => (
-              <TouchableOpacity
-                key={chat.id}
-                style={styles.groupChatItem}
-                onPress={() => {
-                  navigation.navigate("General Chat");
-                }}
-              >
-                <View style={styles.chatLeft}>
-                  <Text style={styles.hashIcon}>
-                    {chat.isPrivate ? (
-                      <Icon
-                        name="lock-closed"
-                        color="#000"
-                        style={styles.lockIcon}
-                      />
-                    ) : (
-                      "#"
-                    )}
-                  </Text>
-                </View>
-                <View style={styles.chatMiddle}>
-                  <Text style={styles.chatTitle}>{chat.name}</Text>
-                  <Text style={styles.chatDescription}>{chat.description}</Text>
-                </View>
-                <View style={styles.chatRight}>
-                  <Text style={styles.chatArrow}>›</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {groupChats
+              // .slice() /
+              .sort((a, b) => {
+                if (a.isPrivate === b.isPrivate) return 0;
+                return a.isPrivate ? -1 : 1;
+              })
+              .map((chat) => (
+                <TouchableOpacity
+                  key={chat.id}
+                  style={styles.groupChatItem}
+                  onPress={() => {
+                    navigation.navigate("General Chat");
+                  }}
+                >
+                  <View style={styles.chatLeft}>
+                    <Text style={styles.hashIcon}>
+                      {chat.isPrivate ? (
+                        <Icon
+                          name="lock-closed"
+                          color="#000"
+                          style={styles.lockIcon}
+                        />
+                      ) : (
+                        "#"
+                      )}
+                    </Text>
+                  </View>
+                  <View style={styles.chatMiddle}>
+                    <Text style={styles.chatTitle}>{chat.name}</Text>
+                    <Text style={styles.chatDescription}>
+                      {chat.description}
+                    </Text>
+                  </View>
+                  <View style={styles.chatRight}>
+                    <Text style={styles.chatArrow}>›</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
           </View>
         ) : (
           <View>
@@ -238,6 +356,9 @@ export default function NonProfitScreen() {
                             <Image
                               source={{ uri: member.profilePhoto }}
                               style={styles.memberAvatar}
+                              transition={150}
+                              cachePolicy="memory-disk"
+                              placeholder={null}
                             />
                             <View style={styles.memberText}>
                               <Text style={styles.memberName}>
@@ -326,6 +447,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: "center",
     marginTop: "5%",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   container: {
     flexDirection: "row",
@@ -347,6 +470,42 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 5,
   },
+  badgesHeaderRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginRight: 15,
+    marginTop: 10,
+  },
+  badgesViewAll: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#7a7a7a",
+  },
+  badgesCard: {
+    backgroundColor: "#fff",
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    marginHorizontal: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 2,
+  },
+  badgesRow: {
+    alignItems: "center",
+  },
+  badgeWrap: {
+    marginRight: 12,
+  },
+  badgeIcon: {
+    width: 80,
+    height: 80,
+    resizeMode: "contain",
+  },
+
   textButton: {
     alignSelf: "center",
     color: "#fbfbfbff",
@@ -469,7 +628,8 @@ const styles = StyleSheet.create({
   },
   storyCard: {
     alignItems: "center",
-    marginRight: 16,
+    marginLeft: 10,
+    // marginRight: 16,
     width: 90,
   },
   storyImageWrapper: {
