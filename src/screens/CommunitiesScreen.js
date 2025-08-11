@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
-    marginTop: 32,
+    marginTop: 65,
     marginBottom: 12,
     textAlign: "center",
     color: "#222",
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
   groupCardContainer: {
     backgroundColor: "white",
     borderRadius: 16,
-    marginHorizontal: 1,
+    marginHorizontal: 15,
     marginTop: 16,
     shadowColor: "#111",
     shadowOpacity: 0.2,

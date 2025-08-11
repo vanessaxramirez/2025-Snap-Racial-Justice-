@@ -5,12 +5,11 @@ import { Followers, More, Search } from "../../assets/snapchat/HeaderIcons";
 import { createStackNavigator } from "@react-navigation/stack";
 import ProfileScreen from "../screens/ProfileScreen";
 import AddFriendScreen from "../screens/AddFriendScreen";
+
 import { Pressable } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SearchScreen from "../screens/SearchScreen";
 import { useState, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
-import { useCallback } from "react";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
 import { supabase } from "../utils/hooks/supabase";
 
@@ -28,27 +27,27 @@ export default function Header({ title }) {
 
   useFocusEffect(
     useCallback(() => {
-      async function fetchProfilePic() {
-        if (user === null) {
-          return;
-        }
-
-        const { data, error } = await supabase
-          .from("profiles")
-          .select("avatar_url")
-          .eq("id", user.id)
-          .single();
-
-        if (error) {
-          console.log("Profile pic fetch failure");
-        } else if (data.avatar_url) {
-          setProfilePicUrl(data.avatar_url);
-        }
+  useEffect(() => {
+    async function fetchProfilePic() {
+      if (user === null) {
+        return;
       }
 
-      fetchProfilePic();
-    }, [user])
-  );
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("avatar_url")
+        .eq("id", user.id)
+        .single();
+
+      if (error) {
+        console.log("Profile pic fetch failure");
+      } else if (data.avatar_url) {
+        setProfilePicUrl(data.avatar_url);
+      }
+    }
+
+    fetchProfilePic();
+  }, [user]);
 
   const [showMenu, setShowMenu] = useState(false);
   // console.log(showMenu);
@@ -129,7 +128,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 24,
   },
   title: {
     textAlign: "center",
