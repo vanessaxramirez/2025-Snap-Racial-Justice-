@@ -186,7 +186,9 @@ export default function NonProfitScreen() {
 
           {/* OrgCaption */}
           {organization.map((org) => (
-            <Text style={styles.caption}>{org.orgCaption}</Text>
+            <Text key={org.id} style={styles.caption}>
+              {org.orgCaption}
+            </Text>
           ))}
         </View>
 
