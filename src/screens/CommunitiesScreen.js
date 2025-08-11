@@ -140,8 +140,8 @@ export default function CommunitiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#ffffff",
+    padding: 0,
+    backgroundColor: "#f8f8f8",
   },
   searchContainer: {
     flexDirection: "row",
@@ -164,8 +164,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginTop: 32,
     marginBottom: 12,
     textAlign: "center",
+    color: "#222",
   },
   searchButtonText: {
     color: "#fff",
@@ -229,5 +231,8 @@ const styles = StyleSheet.create({
   chatArrow: {
     fontSize: 30,
     color: "#888",
+  },
+  arrowIcon: {
+    marginLeft: 8,
   },
 });

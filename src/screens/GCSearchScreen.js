@@ -4,9 +4,26 @@ import { supabase } from "../utils/hooks/supabase";
 import { useAuthentication } from "../utils/hooks/useAuthentication";
 import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
+
+  const communities = [
+    { name: "Color in Code" },
+    { name: "INROADS" },
+    { name: "The Posse Foundation" },
+    { name: "Code2040" },
+    { name: "National Society of Black Engineers" },
+    { name: "Latinas in Tech" },
+    { name: "Management Leadership for Tomorrow" },
+    { name: "ColorStack" },
+    { name: "Black Girls CODE" },
+    { name: "Hispanic Heritage Foundation" },
+    { name: "National Urban League" },
+    { name: "America Needs You" },
+    { name: "The Brotherhood Sister Sol" },
+  ];
 
   return (
     <View style={styles.container}>
@@ -15,57 +32,24 @@ export default function CommunitiesScreen() {
         <Text style={styles.searchButtonText}>Look Up</Text>
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Color in Code</Text>
-        </View>
-
-        <TouchableOpacity
-          onPress={() => {
-            navigation.navigate("Org Page", {});
-          }}
-        >
-          <View style={styles.communityCard}>
-            <Text style={styles.cardText}>INROADS</Text>
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>The Posse Foundation</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Code2040</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>
-            National Society of Black Engineers
-          </Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Latinas in Tech</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>
-            Management Leadership for Tomorrow
-          </Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>ColorStack</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Black Girls CODE</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>Hispanic Heritage Foundation</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>National Urban League</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>America Needs You</Text>
-        </View>
-        <View style={styles.communityCard}>
-          <Text style={styles.cardText}>The Brotherhood Sister Sol</Text>
-        </View>
+        {communities.map((community, index) => (
+          <TouchableOpacity
+            key={community.name}
+            style={styles.communityCard}
+            onPress={() => navigation.navigate("Org Page", {})}
+            activeOpacity={0.85}
+          >
+            <View style={styles.cardTextContainer}>
+              <Text style={styles.cardTitle}>{community.name}</Text>
+            </View>
+            <Icon
+              name="chevron-forward"
+              size={24}
+              color="#bbbb"
+              style={styles.arrowIcon}
+            />
+          </TouchableOpacity>
+        ))}
       </ScrollView>
     </View>
   );
@@ -74,20 +58,41 @@ export default function CommunitiesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: "#ffffff",
+    padding: 0,
+    backgroundColor: "#f8f8f8",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
+    marginTop: 32,
     marginBottom: 12,
+    textAlign: "center",
+    color: "#222",
+  },
+  searchBar: {
+    height: 45,
+    borderRadius: 25,
+    paddingHorizontal: 15,
+    backgroundColor: "#f0f0f0",
+    fontSize: 16,
+    marginHorizontal: 24,
+    marginBottom: 16,
+    marginTop: 25,
+    borderColor: "#ccc",
+    borderWidth: 1,
   },
   searchButton: {
-    backgroundColor: "#363b44ff",
+    backgroundColor: "#0FADFF",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
+    marginHorizontal: 24,
     marginBottom: 20,
+    shadowColor: "#0FADFF",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
+    elevation: 2,
   },
   searchButtonText: {
     color: "#fff",
@@ -96,26 +101,30 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 30,
+    paddingHorizontal: 12,
   },
   communityCard: {
-    backgroundColor: "#eeeeee",
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 20,
     padding: 16,
-    marginBottom: 12,
-    alignItems: "center",
+    marginBottom: 16,
+    shadowColor: "#000",
+    shadowOpacity: 0.07,
+    shadowRadius: 8,
+    elevation: 2,
   },
-  cardText: {
-    fontSize: 16,
-    fontWeight: "500",
+  cardTextContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
-  searchBar: {
-    height: 45,
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    backgroundColor: "#f0f0f0",
-    fontSize: 16,
-    marginBottom: 20,
-    borderColor: "#ccc",
-    borderWidth: 1,
+  cardTitle: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "#222",
+  },
+  arrowIcon: {
+    marginLeft: 8,
   },
 });
