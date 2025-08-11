@@ -29,7 +29,7 @@ export const badges = [
   },
   {
     name: "Apprentice_LvlEight_Grey",
-    image: require("./badges/Apprentice_LvlEight_Grey.png"),
+    image: require("./badges/Apprentice_LvlEight_grey.png"),
   },
   {
     name: "Apprentice_LvlNine_Grey",

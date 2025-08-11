@@ -13,8 +13,12 @@ import { useEffect, useState } from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 
 export default function NonProfitScreen() {
+  const route = useRoute();
+  const { id: growthCircleID } = route.params;
+  const [organization, setOrganization] = useState([]);
   const [groupChats, setGroupChats] = useState([]);
   const [members, setMembers] = useState([]);
   const [selectedTab, setSelectedTab] = useState("Groups");
@@ -23,6 +27,28 @@ export default function NonProfitScreen() {
   const roleOrder = ["Admins", "Mentors", "Sprouts"];
 
   useEffect(() => {
+    const orgDataCall = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("growthCircles")
+          .select("*")
+          .eq("id", growthCircleID);
+        console.log("grabbing specific group data: ", data);
+        if (error) {
+          console.error("Error fetching group:", error);
+        } else {
+          setOrganization(data);
+          console.log("i just sent these", organization);
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      }
+    };
+
+    if (growthCircleID) {
+      orgDataCall();
+    }
+
     const groupChatCall = async () => {
       try {
         const { data, error } = await supabase.from("group_chats").select("*");
@@ -83,24 +109,34 @@ export default function NonProfitScreen() {
 
   return (
     <View style={{ flex: 1, position: "relative" }}>
-      <ImageBackground
-        source={require("../../assets/BGC.png")}
-        style={styles.headerBackground}
-      />
-      <ScrollView contentContainerStyle={styles.mainContainer}>
-        <View style={styles.scrollContent}>
-          <Image
-            source={{
-              uri: "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
-            }}
-            style={styles.image}
-          />
-          <View style={{ marginTop: 20, marginLeft: 5 }}>
-            <Text style={styles.groupName}>Non-Profit name</Text>
-            <Text style={styles.growthCircle}>Growth Circle · 237 Members</Text>
-          </View>
-        </View>
+      {/* Organization Header */}
+      {organization.map((org) => (
+        <ImageBackground
+          source={{ uri: org.headerImage }}
+          style={styles.headerBackground}
+        />
+      ))}
 
+      {/* Profile Photo and Org's Name / number of members */}
+      <ScrollView contentContainerStyle={styles.mainContainer}>
+        {organization.map((org) => (
+          <View style={styles.scrollContent}>
+            <Image
+              source={{
+                uri: org.orgPhoto,
+              }}
+              style={styles.image}
+            />
+            <View style={{ marginTop: 20, marginLeft: 5 }}>
+              <Text style={styles.groupName}>{org.orgName}</Text>
+              <Text style={styles.growthCircle}>
+                Growth Circle · 237 Members
+              </Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Notification Bell/ Invite buttons */}
         <View style={{ backgroundColor: "white" }}>
           <View style={{ flexDirection: "row" }}>
             <TouchableOpacity style={styles.readMoreButton}>
@@ -125,38 +161,45 @@ export default function NonProfitScreen() {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.caption}>
-            This Growth Circle and Growth Circle Group Chats are affiliated and
-            managed by Black Girls who Code (BGC). Violation of Snapchat's
-            Community Guidelines could lead to blocking from Communities or an
-            account lock.
-          </Text>
+          {/* OrgCaption */}
+          {organization.map((org) => (
+            <Text style={styles.caption}>{org.orgCaption}</Text>
+          ))}
         </View>
 
         <View style={styles.storiesView}>
           <Text style={styles.sectionHeader}>Pinned Stories</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {pinnedStories.map((story) => (
-              <TouchableOpacity key={story.id} style={styles.storyCard}>
-                <View style={styles.storyImageWrapper}>
-                  <Image
-                    source={{
-                      uri: "https://drive.google.com/uc?export=download&id=1rYLophrBUzc_tNqJjUZmHrIME66FNhXE",
-                    }}
-                    style={styles.storyImage}
-                  />
-                  {story.is_featured && (
-                    <View style={styles.starBadge}>
-                      <Icon name="star" size={14} color="black" />
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.storyTitle}>{story.title}</Text>
-              </TouchableOpacity>
-            ))}
+            {[...pinnedStories]
+              .sort((a, b) =>
+                a.title === "Snap Stars in STEM"
+                  ? -1
+                  : b.title === "Snap Stars in STEM"
+                  ? 1
+                  : 0
+              )
+              .map((story) => (
+                <TouchableOpacity key={story.id} style={styles.storyCard}>
+                  <View style={styles.storyImageWrapper}>
+                    <Image
+                      source={{
+                        uri: story.imageURL,
+                      }}
+                      style={styles.storyImage}
+                    />
+                    {story.title === "Snap Stars in STEM" && (
+                      <View style={styles.starBadge}>
+                        <Icon name="star" size={14} color="black" />
+                      </View>
+                    )}
+                  </View>
+                  <Text style={styles.storyTitle}>{story.title}</Text>
+                </TouchableOpacity>
+              ))}
           </ScrollView>
         </View>
 
+        {/* Group/Members Slider */}
         <View style={styles.tabContainer}>
           <View style={styles.tabRow}>
             {["Groups", "Members"].map((tab) => (
@@ -179,6 +222,7 @@ export default function NonProfitScreen() {
           </View>
         </View>
 
+        {/* Displaying Chats or Members */}
         {selectedTab === "Groups" ? (
           <View style={styles.groupCardContainer}>
             {groupChats.map((chat) => (
@@ -469,7 +513,8 @@ const styles = StyleSheet.create({
   },
   storyCard: {
     alignItems: "center",
-    marginRight: 16,
+    marginLeft: 10,
+    // marginRight: 16,
     width: 90,
   },
   storyImageWrapper: {
