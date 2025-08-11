@@ -93,7 +93,7 @@ export default function App() {
         <Stack.Screen
           name="Org Page"
           component={NonProfitScreen}
-          options={{ headerShown: true }}
+          // options={{ headerShown: true }}
         />
         <Stack.Screen
           name="Badges"
