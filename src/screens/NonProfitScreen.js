@@ -1,10 +1,7 @@
 import {
-  Image,
   Text,
   View,
-  Button,
   StyleSheet,
-  Pressable,
   ImageBackground,
   TouchableOpacity,
 } from "react-native";
@@ -14,6 +11,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import { ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useRoute } from "@react-navigation/native";
+import { Image } from "expo-image";
 
 export default function NonProfitScreen() {
   const route = useRoute();
@@ -111,9 +109,12 @@ export default function NonProfitScreen() {
     <View style={{ flex: 1, position: "relative" }}>
       {/* Organization Header */}
       {organization.map((org) => (
-        <ImageBackground
+        <Image
           source={{ uri: org.headerImage }}
           style={styles.headerBackground}
+          transition={150}
+          cachePolicy="memory-disk"
+          placeholder={null}
         />
       ))}
 
@@ -126,6 +127,9 @@ export default function NonProfitScreen() {
                 uri: org.orgPhoto,
               }}
               style={styles.image}
+              transition={150}
+              cachePolicy="memory-disk"
+              placeholder={null}
             />
             <View style={{ marginTop: 20, marginLeft: 5 }}>
               <Text style={styles.groupName}>{org.orgName}</Text>
@@ -186,6 +190,9 @@ export default function NonProfitScreen() {
                         uri: story.imageURL,
                       }}
                       style={styles.storyImage}
+                      transition={150}
+                      cachePolicy="memory-disk"
+                      placeholder={null}
                     />
                     {story.title === "Snap Stars in STEM" && (
                       <View style={styles.starBadge}>
@@ -225,36 +232,44 @@ export default function NonProfitScreen() {
         {/* Displaying Chats or Members */}
         {selectedTab === "Groups" ? (
           <View style={styles.groupCardContainer}>
-            {groupChats.map((chat) => (
-              <TouchableOpacity
-                key={chat.id}
-                style={styles.groupChatItem}
-                onPress={() => {
-                  navigation.navigate("General Chat");
-                }}
-              >
-                <View style={styles.chatLeft}>
-                  <Text style={styles.hashIcon}>
-                    {chat.isPrivate ? (
-                      <Icon
-                        name="lock-closed"
-                        color="#000"
-                        style={styles.lockIcon}
-                      />
-                    ) : (
-                      "#"
-                    )}
-                  </Text>
-                </View>
-                <View style={styles.chatMiddle}>
-                  <Text style={styles.chatTitle}>{chat.name}</Text>
-                  <Text style={styles.chatDescription}>{chat.description}</Text>
-                </View>
-                <View style={styles.chatRight}>
-                  <Text style={styles.chatArrow}>›</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
+            {groupChats
+              // .slice() /
+              .sort((a, b) => {
+                if (a.isPrivate === b.isPrivate) return 0;
+                return a.isPrivate ? -1 : 1;
+              })
+              .map((chat) => (
+                <TouchableOpacity
+                  key={chat.id}
+                  style={styles.groupChatItem}
+                  onPress={() => {
+                    navigation.navigate("General Chat");
+                  }}
+                >
+                  <View style={styles.chatLeft}>
+                    <Text style={styles.hashIcon}>
+                      {chat.isPrivate ? (
+                        <Icon
+                          name="lock-closed"
+                          color="#000"
+                          style={styles.lockIcon}
+                        />
+                      ) : (
+                        "#"
+                      )}
+                    </Text>
+                  </View>
+                  <View style={styles.chatMiddle}>
+                    <Text style={styles.chatTitle}>{chat.name}</Text>
+                    <Text style={styles.chatDescription}>
+                      {chat.description}
+                    </Text>
+                  </View>
+                  <View style={styles.chatRight}>
+                    <Text style={styles.chatArrow}>›</Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
           </View>
         ) : (
           <View>
@@ -282,6 +297,9 @@ export default function NonProfitScreen() {
                             <Image
                               source={{ uri: member.profilePhoto }}
                               style={styles.memberAvatar}
+                              transition={150}
+                              cachePolicy="memory-disk"
+                              placeholder={null}
                             />
                             <View style={styles.memberText}>
                               <Text style={styles.memberName}>
