@@ -5,6 +5,7 @@ import { useAuthentication } from "../utils/hooks/useAuthentication";
 import { TouchableOpacity, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
+import Icon from "react-native-vector-icons/Ionicons";
 
 export default function CommunitiesScreen() {
   const navigation = useNavigation();
@@ -73,12 +74,20 @@ export default function CommunitiesScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Find your Growth Circle</Text>
-      <TextInput
-        placeholder="Search communities..."
-        style={styles.searchBar}
-        value={searchText}
-        onChangeText={setSearchText}
-      />
+      <View style={styles.searchContainer}>
+        <Icon
+          name="search-sharp"
+          size={25}
+          // color="#888"
+          style={styles.searchIcon}
+        />
+        <TextInput
+          placeholder="Search communities..."
+          style={styles.searchBar}
+          value={searchText}
+          onChangeText={setSearchText}
+        />
+      </View>
 
       {/* After Search bar */}
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -134,20 +143,23 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: "#ffffff",
   },
-  searchBar: {
-    height: 40,
-    borderRadius: 25,
-    paddingHorizontal: 15,
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: "#f0f0f0",
-    fontSize: 16,
-    marginBottom: 5,
+    borderRadius: 25,
+    paddingHorizontal: 10,
     borderColor: "#ccc",
     borderWidth: 1,
   },
-  searchButtonText: {
-    color: "#fff",
+  searchIcon: {
+    marginRight: 6,
+    color: "#444",
+  },
+  searchBar: {
+    flex: 1,
+    height: 40,
     fontSize: 16,
-    fontWeight: "600",
   },
   title: {
     fontSize: 24,
