@@ -25,8 +25,6 @@ export default function Header({ title }) {
 
   const { user } = useAuthentication();
 
-  useFocusEffect(
-    useCallback(() => {
   useEffect(() => {
     async function fetchProfilePic() {
       if (user === null) {
