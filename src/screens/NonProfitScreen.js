@@ -26,6 +26,27 @@ export default function NonProfitScreen() {
   const roleOrder = ["Admins", "Mentors", "Sprouts"];
 
   useEffect(() => {
+    const groupChatCall = async () => {
+      try {
+        const { data, error } = await supabase
+          .from("group_chats")
+          .select("*")
+          .eq("growth_circle_id", growthCircleID);
+        if (error) {
+          console.error("Error fetching group chats:", error);
+        } else {
+          setGroupChats(data);
+          console.log(
+            `fetched  ${data.length} chats for community ${growthCircleID}`
+          );
+        }
+      } catch (error) {
+        console.error("Unexpected error:", error);
+      }
+    };
+
+    groupChatCall();
+
     const orgDataCall = async () => {
       try {
         const { data, error } = await supabase
@@ -37,49 +58,31 @@ export default function NonProfitScreen() {
           console.error("Error fetching group:", error);
         } else {
           setOrganization(data);
-          console.log("i just sent these", organization);
-          const orgRow = data[0];
-          const ids = orgRow.orgChats;
-          // console.log("orgChats ids from growthCircles:", ids);
-          if (!ids.length) {
-            setGroupChats([]);
-            return;
-          }
+          // console.log("i just sent these", organization);
+          // const orgRow = data[0];
+          // const ids = orgRow.orgChats;
+          // // console.log("orgChats ids from growthCircles:", ids);
+          // if (!ids.length) {
+          //   setGroupChats([]);
+          //   return;
+          // }
 
-          const { data: chats, error: chatsError } = await supabase
-            .from("group_chats")
-            .select("*")
-            .in("id", ids);
+          // const { data: chats, error: chatsError } = await supabase
+          //   .from("group_chats")
+          //   .select("*")
+          //   .in("id", ids);
 
-          if (chatsError) {
-            console.error("Error fetching group chats:", chatsError);
-          } else {
-            setGroupChats(chats);
-          }
+          // if (chatsError) {
+          //   console.error("Error fetching group chats:", chatsError);
+          // } else {
+          //   setGroupChats(chats);
+          // }
         }
       } catch (error) {
         console.error("Unexpected error:", error);
       }
     };
-
-    if (growthCircleID) {
-      orgDataCall();
-    }
-
-    // const groupChatCall = async () => {
-    //   try {
-    //     const { data, error } = await supabase.from("group_chats").select("*");
-    //     if (error) {
-    //       console.error("Error fetching group chats:", error);
-    //     } else {
-    //       setGroupChats(data);
-    //     }
-    //   } catch (error) {
-    //     console.error("Unexpected error:", error);
-    //   }
-    // };
-
-    // groupChatCall();
+    orgDataCall();
 
     const fetchPinnedStories = async () => {
       try {
@@ -113,6 +116,21 @@ export default function NonProfitScreen() {
     membersCall();
   }, [growthCircleID]);
 
+  // const groupChatCall = async () => {
+  //   try {
+  //     const { data, error } = await supabase.from("group_chats").select("*");
+  //     if (error) {
+  //       console.error("Error fetching group chats:", error);
+  //     } else {
+  //       setGroupChats(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //   }
+  // };
+
+  // groupChatCall();
+
   const membersByRole = members.reduce((acc, member) => {
     if (!acc[member.role]) acc[member.role] = [];
     acc[member.role].push(member);
@@ -129,6 +147,7 @@ export default function NonProfitScreen() {
       {/* Organization Header */}
       {organization.map((org) => (
         <Image
+          key={org.id}
           source={{ uri: org.headerImage }}
           style={styles.headerBackground}
           transition={150}
@@ -186,7 +205,9 @@ export default function NonProfitScreen() {
 
           {/* OrgCaption */}
           {organization.map((org) => (
-            <Text style={styles.caption}>{org.orgCaption}</Text>
+            <Text key={org.id} style={styles.caption}>
+              {org.orgCaption}
+            </Text>
           ))}
         </View>
 
@@ -294,15 +315,20 @@ export default function NonProfitScreen() {
             {groupChats
               // .slice() /
               .sort((a, b) => {
-                if (a.isPrivate === b.isPrivate) return 0;
-                return a.isPrivate ? -1 : 1;
+                if (a.isPrivate && !b.isPrivate) return 1;
+                if (!a.isPrivate && b.isPrivate) return -1;
+                return 0;
               })
               .map((chat) => (
                 <TouchableOpacity
                   key={chat.id}
                   style={styles.groupChatItem}
                   onPress={() => {
-                    navigation.navigate("General Chat");
+                    navigation.navigate("General Chat", {
+                      chatId: chat.id,
+                      communityId: growthCircleID,
+                      chatName: chat.name,
+                    });
                   }}
                 >
                   <View style={styles.chatLeft}>
@@ -743,5 +769,10 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 8,
+  },
+  inviteText: {
+    fontSize: 12,
+    fontWeight: "bold",
+    marginLeft: 4,
   },
 });

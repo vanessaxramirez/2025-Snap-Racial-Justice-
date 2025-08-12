@@ -23,8 +23,12 @@ export default function GroupChatScreen({ route, navigation }) {
   const username = user?.email || "Guest";
   //const isSender = item.user_email === username;
 
+  const { chatId, communityId, chatName } = route.params || {};
+
+  const roomName = chatId ? `chat_${chatId}` : "global_room";
+
   const { messages, sendMessage, isConnected } = useRealtimeChat({
-    roomName: "global_room",
+    roomName: roomName,
     username,
   });
 
@@ -44,7 +48,7 @@ export default function GroupChatScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}> Growth Circle Chat</Text>
+      <Text style={styles.header}> {chatName || "Growth Circle Chat"}</Text>
       <FlatList
         ref={containerRef}
         data={messages}
