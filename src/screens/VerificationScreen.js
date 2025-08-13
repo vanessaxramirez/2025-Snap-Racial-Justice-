@@ -89,7 +89,7 @@ export default function CommunitiesScreen() {
               style={styles.closeButton}
               onPress={() => {
                 setValidModalVisible(false);
-                navigation.navigate("Org Page", {});
+                navigation.navigate("Communities", {});
               }}
             >
               <Text style={styles.closeButtonText}>Close</Text>
@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#ffffff",
+    paddingTop: 100,
   },
   title: {
     fontSize: 24,
